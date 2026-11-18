@@ -1,0 +1,334 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="M&S BOUTIQUE : La mode qui révèle ta personnalité. Découvrez nos collections de mode.">
+  <title>M&S BOUTIQUE | La mode qui révèle ta personnalité</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff;
+      color: #292331;
+    }
+
+    header {
+      padding: 18px 6%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #eee8f2;
+      position: sticky;
+      top: 0;
+      background: #fff;
+      z-index: 10;
+    }
+
+    .logo {
+      font-size: 23px;
+      font-weight: 800;
+      color: #633b91;
+      letter-spacing: 1px;
+    }
+
+    .logo span {
+      color: #292331;
+    }
+
+    nav {
+      display: flex;
+      gap: 22px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #39313f;
+      font-size: 14px;
+    }
+
+    .hero {
+      margin: 28px auto;
+      width: 90%;
+      min-height: 390px;
+      border-radius: 18px;
+      background: linear-gradient(120deg, #f5effa, #e6d8f1);
+      display: flex;
+      align-items: center;
+      padding: 45px;
+      overflow: hidden;
+    }
+
+    .hero-content {
+      max-width: 550px;
+    }
+
+    .eyebrow {
+      color: #744ba0;
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 3px;
+      font-weight: bold;
+    }
+
+    h1 {
+      font-size: clamp(35px, 6vw, 58px);
+      line-height: 1.1;
+      margin: 18px 0;
+      color: #30243b;
+    }
+
+    .hero p {
+      color: #62576b;
+      line-height: 1.7;
+      margin-bottom: 25px;
+    }
+
+    .btn {
+      display: inline-block;
+      background: #633b91;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 7px;
+      text-decoration: none;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+    }
+
+    section {
+      padding: 55px 6%;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .section-title h2 {
+      font-size: 29px;
+      color: #30243b;
+      margin-bottom: 10px;
+    }
+
+    .section-title p {
+      color: #817889;
+      font-size: 14px;
+    }
+
+    .collections {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .collection {
+      min-height: 155px;
+      padding: 25px;
+      background: #f7f3fa;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      transition: .25s;
+    }
+
+    .collection:hover {
+      transform: translateY(-5px);
+      background: #eee5f6;
+    }
+
+    .collection .symbol {
+      font-size: 30px;
+      margin-bottom: 12px;
+    }
+
+    .collection h3 {
+      color: #533477;
+      font-size: 17px;
+    }
+
+    .collection p {
+      font-size: 12px;
+      color: #817889;
+      margin-top: 7px;
+    }
+
+    .about {
+      background: #faf8fc;
+      text-align: center;
+      border-radius: 15px;
+      margin: 0 6% 55px;
+      padding: 45px 25px;
+    }
+
+    .about h2 {
+      color: #633b91;
+      margin-bottom: 15px;
+    }
+
+    .about p {
+      max-width: 650px;
+      margin: auto;
+      line-height: 1.8;
+      color: #62576b;
+    }
+
+    footer {
+      background: #30243b;
+      color: #fff;
+      text-align: center;
+      padding: 30px 15px;
+      font-size: 13px;
+      line-height: 2;
+    }
+
+    footer strong {
+      color: #d9c2f0;
+    }
+
+    @media (max-width: 650px) {
+      header {
+        padding: 16px 5%;
+      }
+
+      nav {
+        gap: 12px;
+      }
+
+      nav a {
+        font-size: 11px;
+      }
+
+      .logo {
+        font-size: 18px;
+      }
+
+      .hero {
+        min-height: 340px;
+        padding: 28px 22px;
+      }
+
+      .collections {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+
+      .collection {
+        min-height: 135px;
+        padding: 17px;
+      }
+
+      section {
+        padding: 40px 5%;
+      }
+    }
+
+    @media (max-width: 360px) {
+      nav {
+        gap: 8px;
+      }
+
+      nav a {
+        font-size: 10px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="logo">M&S <span>BOUTIQUE</span></div>
+    <nav>
+      <a href="#accueil">Accueil</a>
+      <a href="#collections">Collections</a>
+      <a href="#apropos">À propos</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="accueil">
+      <div class="hero-content">
+        <div class="eyebrow">Bienvenue dans notre univers</div>
+        <h1>La mode qui révèle ta personnalité.</h1>
+        <p>
+          Découvrez un univers de mode moderne, élégant et inspirant.
+          Trouvez les pièces qui correspondent à votre style.
+        </p>
+        <a href="#collections" class="btn">Découvrir nos collections</a>
+      </div>
+    </section>
+
+    <section id="collections">
+      <div class="section-title">
+        <h2>Nos collections</h2>
+        <p>Des pièces sélectionnées pour révéler votre personnalité.</p>
+      </div>
+
+      <div class="collections">
+        <div class="collection">
+          <div class="symbol">👗</div>
+          <h3>Robes</h3>
+          <p>Élégance au quotidien</p>
+        </div>
+
+        <div class="collection">
+          <div class="symbol">✨</div>
+          <h3>Jupes</h3>
+          <p>Style et féminité</p>
+        </div>
+
+        <div class="collection">
+          <div class="symbol">👚</div>
+          <h3>Hauts</h3>
+          <p>Exprimez votre style</p>
+        </div>
+
+        <div class="collection">
+          <div class="symbol">💜</div>
+          <h3>Ensembles</h3>
+          <p>Des looks harmonieux</p>
+        </div>
+
+        <div class="collection">
+          <div class="symbol">💎</div>
+          <h3>Bijoux</h3>
+          <p>Les détails qui changent tout</p>
+        </div>
+
+        <div class="collection">
+          <div class="symbol">👜</div>
+          <h3>Accessoires</h3>
+          <p>La touche finale</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="about" id="apropos">
+      <h2>L'univers M&S BOUTIQUE</h2>
+      <p>
+        Plus qu'une boutique, M&S BOUTIQUE est un univers
+        où élégance, modernité et personnalité se rencontrent.
+        Notre ambition est de vous accompagner dans
+        l'expression de votre propre style.
+      </p>
+    </div>
+  </main>
+
+  <footer>
+    <strong>M&S BOUTIQUE</strong><br>
+    La mode qui révèle ta personnalité.<br>
+    Côte d'Ivoire · Tous droits réservés
+  </footer>
+
+</body>
+</html>

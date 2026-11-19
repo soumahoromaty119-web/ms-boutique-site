@@ -742,7 +742,50 @@ button:active,
   .filter-btn {
     transition: none;
   }
-                              }</style>
+                              }
+/* ANIMATION CINEMATIQUE DE L'ACCUEIL */
+.hero-content > * {
+  opacity: 0;
+  animation: heroEntrance 1s cubic-bezier(.2,.8,.2,1) forwards;
+}
+
+.hero-content .eyebrow {
+  animation-delay: .15s;
+}
+
+.hero-content h1 {
+  animation-delay: .35s;
+}
+
+.hero-content p {
+  animation-delay: .55s;
+}
+
+.hero-content .button {
+  animation-delay: .75s;
+}
+
+@keyframes heroEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(35px) scale(.97);
+    filter: blur(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-content > * {
+    opacity: 1;
+    animation: none;
+    filter: none;
+  }
+}
+</style>
 </head>
 
 <body>

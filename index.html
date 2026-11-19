@@ -1784,6 +1784,534 @@ document.addEventListener("DOMContentLoaded",function(){
 
 });
 </script>
+<script>
+/* ==========================================================
+   M&S BOUTIQUE — FICHES PRODUITS + PANIER
+   Intégration autonome : un seul bloc à coller avant </body>
+   ========================================================== */
+(function () {
+  "use strict";
+
+  const catalog = [
+    {
+      id: "robe-rose",
+      name: "Robe longue rose à volants",
+      description: "Une robe élégante et féminine pour révéler ton style.",
+      prices: { small: 7000, large: 8500 },
+      colors: [
+        { name: "Noir", value: "#171717" },
+        { name: "Beige", value: "#d7c2a2" },
+        { name: "Rouge", value: "#c72b3b" },
+        { name: "Blanc", value: "#ffffff" },
+        { name: "Vert", value: "#28734c" },
+        { name: "Bleu", value: "#3979b9" },
+        { name: "Rose", value: "#e99ab8" }
+      ]
+    },
+    {
+      id: "ensemble-rouge",
+      name: "Ensemble rouge uni",
+      description: "Un ensemble chic pour une allure affirmée et moderne.",
+      prices: { small: 7000, large: 8500 },
+      colors: [
+        { name: "Rouge", value: "#c62836" },
+        { name: "Noir", value: "#171717" },
+        { name: "Rose", value: "#e99ab8" },
+        { name: "Violet", value: "#7543a0" },
+        { name: "Marron", value: "#805438" },
+        { name: "Blanc", value: "#ffffff" },
+        { name: "Vert", value: "#28734c" }
+      ]
+    },
+    {
+      id: "ensemble-carreaux",
+      name: "Ensemble blanc et rouge à carreaux",
+      description: "Un look original et élégant pour affirmer ta personnalité.",
+      prices: { small: 5500, large: 7000 },
+      colors: [
+        { name: "Blanc et rouge à carreaux", value: "linear-gradient(45deg,#fff 0 45%,#c52d3c 45% 55%,#fff 55%)" }
+      ]
+    }
+  ];
+
+  const sizes = ["XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL"];
+  const STORAGE_KEY = "ms_boutique_cart_v1";
+
+  let cart = [];
+  let selectedProduct = null;
+  let selectedColor = "";
+  let selectedSize = "M";
+
+  try {
+    cart = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    if (!Array.isArray(cart)) cart = [];
+  } catch (error) {
+    cart = [];
+  }
+
+  const money = value =>
+    Number(value).toLocaleString("fr-FR") + " FCFA";
+
+  const priceFor = (product, size) =>
+    ["XL", "XXL", "XXXL"].includes(size)
+      ? product.prices.large
+      : product.prices.small;
+
+  const style = document.createElement("style");
+  style.textContent = `
+    .ms-action-btn {
+      display:inline-flex;align-items:center;justify-content:center;
+      gap:9px;padding:13px 19px;border:0;border-radius:13px;
+      background:linear-gradient(135deg,#633b91,#9568c2);
+      color:white;font-weight:700;font-size:14px;cursor:pointer;
+      transition:transform .25s,box-shadow .25s;
+      box-shadow:0 8px 22px rgba(99,59,145,.2);
+    }
+    .ms-action-btn:hover {
+      transform:translateY(-3px);
+      box-shadow:0 13px 28px rgba(99,59,145,.3);
+    }
+    .ms-product-action {width:100%;margin-top:16px}
+    .ms-cart-float {
+      position:fixed;right:20px;bottom:22px;z-index:9997;
+      border:0;border-radius:50px;padding:15px 20px;
+      color:#fff;background:#30243b;font-weight:800;
+      box-shadow:0 10px 35px rgba(0,0,0,.23);
+      cursor:pointer;display:flex;align-items:center;gap:10px;
+      transition:transform .25s;
+    }
+    .ms-cart-float:hover {transform:translateY(-4px)}
+    .ms-cart-count {
+      min-width:23px;height:23px;border-radius:50%;
+      background:#e99ab8;color:#30243b;
+      display:inline-flex;align-items:center;justify-content:center;
+      font-size:12px;font-weight:900;
+    }
+    .ms-layer {
+      position:fixed;inset:0;z-index:9998;
+      display:none;align-items:center;justify-content:center;
+      padding:16px;background:rgba(25,17,31,.68);
+      backdrop-filter:blur(8px);
+    }
+    .ms-layer.ms-visible {display:flex;animation:msFade .25s ease}
+    .ms-panel {
+      width:min(100%,560px);max-height:90vh;overflow:auto;
+      background:#fff;border-radius:23px;padding:25px;
+      position:relative;box-shadow:0 25px 80px rgba(0,0,0,.25);
+      animation:msUp .3s ease;
+    }
+    .ms-panel h2 {color:#30243b;font-size:23px;margin:0 35px 8px 0}
+    .ms-panel p {color:#817889;line-height:1.6}
+    .ms-close {
+      position:absolute;right:17px;top:15px;width:38px;height:38px;
+      border:0;border-radius:50%;background:#f3edf8;color:#30243b;
+      font-size:23px;cursor:pointer;
+    }
+    .ms-field {margin:19px 0}
+    .ms-field label {
+      display:block;color:#30243b;font-weight:800;
+      font-size:14px;margin-bottom:10px;
+    }
+    .ms-size-list {display:flex;flex-wrap:wrap;gap:8px}
+    .ms-size {
+      border:1px solid #e5dceD;background:#fff;color:#30243b;
+      border-radius:10px;padding:10px 13px;font-weight:700;cursor:pointer;
+    }
+    .ms-size.ms-selected {
+      background:#633b91;color:#fff;border-color:#633b91;
+    }
+    .ms-color-list {display:flex;flex-wrap:wrap;gap:12px}
+    .ms-color {
+      width:37px;height:37px;border-radius:50%;
+      border:3px solid white;outline:1px solid #ddd;
+      cursor:pointer;position:relative;
+    }
+    .ms-color.ms-selected {outline:3px solid #633b91}
+    .ms-color-name {font-size:13px;color:#817889;margin-top:9px}
+    .ms-price-box {
+      background:#f7f2fa;border-radius:15px;padding:16px;
+      color:#633b91;font-weight:900;font-size:21px;margin:18px 0;
+    }
+    .ms-cart-item {
+      border-bottom:1px solid #eee8f3;padding:15px 0;
+      display:grid;grid-template-columns:1fr auto;gap:12px;
+    }
+    .ms-cart-item strong {color:#30243b;display:block}
+    .ms-cart-item small {color:#817889;display:block;margin-top:5px}
+    .ms-quantity {display:flex;align-items:center;gap:10px;margin-top:10px}
+    .ms-quantity button,.ms-remove {
+      border:0;border-radius:8px;background:#f3edf8;
+      color:#633b91;font-weight:900;padding:7px 11px;cursor:pointer;
+    }
+    .ms-remove {background:#fff0f0;color:#b52d42}
+    .ms-total {
+      display:flex;justify-content:space-between;gap:12px;
+      padding:19px 0;color:#30243b;font-size:18px;font-weight:900;
+    }
+    .ms-empty {
+      padding:30px 10px;text-align:center;color:#817889;
+      background:#faf8fc;border-radius:15px;margin-top:15px;
+    }
+    .ms-order-note {
+      font-size:12px;color:#817889;text-align:center;margin-top:12px;
+    }
+    @keyframes msFade {from{opacity:0}to{opacity:1}}
+    @keyframes msUp {from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    @media(max-width:480px) {
+      .ms-panel {padding:21px 17px;border-radius:19px}
+      .ms-panel h2 {font-size:20px}
+      .ms-cart-float {right:13px;bottom:14px;padding:13px 16px}
+    }
+    @media(prefers-reduced-motion:reduce) {
+      .ms-layer.ms-visible,.ms-panel {animation:none}
+      .ms-action-btn,.ms-cart-float {transition:none}
+    }
+  `;
+  document.head.appendChild(style);
+
+  document.body.insertAdjacentHTML("beforeend", `
+    <button class="ms-cart-float" id="msCartOpen" type="button">
+      <span>🛍️ Mon panier</span>
+      <span class="ms-cart-count" id="msCartCount">0</span>
+    </button>
+
+    <div class="ms-layer" id="msProductLayer">
+      <div class="ms-panel" role="dialog" aria-modal="true"
+           aria-labelledby="msProductTitle">
+        <button class="ms-close" data-ms-close type="button"
+                aria-label="Fermer">×</button>
+        <h2 id="msProductTitle">Article</h2>
+        <p id="msProductDescription"></p>
+
+        <div class="ms-field">
+          <label>Choisis ta taille</label>
+          <div class="ms-size-list" id="msSizeList"></div>
+        </div>
+
+        <div class="ms-field">
+          <label>Choisis ta couleur</label>
+          <div class="ms-color-list" id="msColorList"></div>
+          <div class="ms-color-name" id="msColorName"></div>
+        </div>
+
+        <div class="ms-price-box" id="msProductPrice"></div>
+        <button class="ms-action-btn ms-product-action"
+                id="msAddToCart" type="button">
+          Ajouter au panier
+        </button>
+      </div>
+    </div>
+
+    <div class="ms-layer" id="msCartLayer">
+      <div class="ms-panel" role="dialog" aria-modal="true"
+           aria-labelledby="msCartTitle">
+        <button class="ms-close" data-ms-close type="button"
+                aria-label="Fermer">×</button>
+        <h2 id="msCartTitle">Mon panier</h2>
+        <p>Retrouve ici les articles que tu as sélectionnés.</p>
+        <div id="msCartItems"></div>
+        <div id="msCartSummary"></div>
+        <button class="ms-action-btn ms-product-action"
+                id="msPrepareOrder" type="button">
+          Préparer ma commande
+        </button>
+        <div class="ms-order-note">
+          La commande sera préparée et partagée pour confirmation.
+          Aucun paiement n'est effectué ici.
+        </div>
+      </div>
+    </div>
+  `);
+
+  const productLayer = document.getElementById("msProductLayer");
+  const cartLayer = document.getElementById("msCartLayer");
+  const sizeList = document.getElementById("msSizeList");
+  const colorList = document.getElementById("msColorList");
+
+  function saveCart() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
+    } catch (error) {
+      console.warn("Le panier n'a pas pu être sauvegardé.", error);
+    }
+    renderCart();
+  }
+
+  function openLayer(layer) {
+    layer.classList.add("ms-visible");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeLayers() {
+    productLayer.classList.remove("ms-visible");
+    cartLayer.classList.remove("ms-visible");
+    document.body.style.overflow = "";
+  }
+
+  function updatePrice() {
+    if (!selectedProduct) return;
+    document.getElementById("msProductPrice").textContent =
+      money(priceFor(selectedProduct, selectedSize));
+  }
+
+  function openProduct(product) {
+    selectedProduct = product;
+    selectedSize = "M";
+    selectedColor = product.colors[0].name;
+
+    document.getElementById("msProductTitle").textContent = product.name;
+    document.getElementById("msProductDescription").textContent =
+      product.description;
+
+    sizeList.innerHTML = "";
+    sizes.forEach(size => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "ms-size" + (size === selectedSize ? " ms-selected" : "");
+      button.textContent = size;
+      button.addEventListener("click", () => {
+        selectedSize = size;
+        sizeList.querySelectorAll(".ms-size").forEach(item =>
+          item.classList.toggle("ms-selected", item.textContent === size)
+        );
+        updatePrice();
+      });
+      sizeList.appendChild(button);
+    });
+
+    colorList.innerHTML = "";
+    product.colors.forEach(color => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "ms-color" +
+        (color.name === selectedColor ? " ms-selected" : "");
+      button.style.background = color.value;
+      button.title = color.name;
+      button.setAttribute("aria-label", color.name);
+      button.addEventListener("click", () => {
+        selectedColor = color.name;
+        colorList.querySelectorAll(".ms-color").forEach(item =>
+          item.classList.toggle("ms-selected", item.title === color.name)
+        );
+        document.getElementById("msColorName").textContent =
+          "Couleur sélectionnée : " + color.name;
+      });
+      colorList.appendChild(button);
+    });
+
+    document.getElementById("msColorName").textContent =
+      "Couleur sélectionnée : " + selectedColor;
+
+    updatePrice();
+    openLayer(productLayer);
+  }
+
+  function renderCart() {
+    const count = cart.reduce((sum, item) => sum + item.qty, 0);
+    document.getElementById("msCartCount").textContent = count;
+
+    const container = document.getElementById("msCartItems");
+    const summary = document.getElementById("msCartSummary");
+    const orderButton = document.getElementById("msPrepareOrder");
+
+    if (!cart.length) {
+      container.innerHTML =
+        '<div class="ms-empty">Ton panier est encore vide.<br>Découvre nos articles et ajoute tes favoris.</div>';
+      summary.innerHTML = "";
+      orderButton.disabled = true;
+      orderButton.style.opacity = ".45";
+      orderButton.style.cursor = "not-allowed";
+      return;
+    }
+
+    orderButton.disabled = false;
+    orderButton.style.opacity = "1";
+    orderButton.style.cursor = "pointer";
+
+    container.innerHTML = cart.map((item, index) => `
+      <div class="ms-cart-item">
+        <div>
+          <strong>${item.name}</strong>
+          <small>Taille : ${item.size} · Couleur : ${item.color}</small>
+          <small>${money(item.price)} / pièce</small>
+          <div class="ms-quantity">
+            <button type="button" data-ms-minus="${index}" aria-label="Diminuer">−</button>
+            <strong>${item.qty}</strong>
+            <button type="button" data-ms-plus="${index}" aria-label="Augmenter">+</button>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <strong>${money(item.price * item.qty)}</strong>
+          <button class="ms-remove" type="button"
+                  data-ms-remove="${index}" style="margin-top:12px">
+            Retirer
+          </button>
+        </div>
+      </div>
+    `).join("");
+
+    const total = cart.reduce((sum, item) =>
+      sum + item.price * item.qty, 0
+    );
+
+    summary.innerHTML = `
+      <div class="ms-total">
+        <span>Total estimé</span>
+        <span>${money(total)}</span>
+      </div>
+    `;
+  }
+
+  document.querySelectorAll(".product-card").forEach((card, index) => {
+    const product = catalog[index];
+    if (!product) return;
+
+    const info = card.querySelector(".product-info");
+    if (!info) return;
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "ms-action-btn ms-product-action";
+    button.textContent = "Voir les détails et choisir";
+    button.addEventListener("click", () => openProduct(product));
+    info.appendChild(button);
+  });
+
+  document.getElementById("msAddToCart").addEventListener("click", () => {
+    if (!selectedProduct) return;
+
+    const price = priceFor(selectedProduct, selectedSize);
+    const existing = cart.find(item =>
+      item.id === selectedProduct.id &&
+      item.size === selectedSize &&
+      item.color === selectedColor
+    );
+
+    if (existing) {
+      existing.qty += 1;
+    } else {
+      cart.push({
+        id: selectedProduct.id,
+        name: selectedProduct.name,
+        size: selectedSize,
+        color: selectedColor,
+        price: price,
+        qty: 1
+      });
+    }
+
+    saveCart();
+    closeLayers();
+    document.getElementById("msCartOpen").animate(
+      [
+        { transform: "scale(1)" },
+        { transform: "scale(1.12)" },
+        { transform: "scale(1)" }
+      ],
+      { duration: 350 }
+    );
+  });
+
+  document.getElementById("msCartOpen").addEventListener("click", () => {
+    renderCart();
+    openLayer(cartLayer);
+  });
+
+  document.addEventListener("click", event => {
+    const minus = event.target.closest("[data-ms-minus]");
+    const plus = event.target.closest("[data-ms-plus]");
+    const remove = event.target.closest("[data-ms-remove]");
+
+    if (minus) {
+      const index = Number(minus.dataset.msMinus);
+      if (cart[index]) {
+        cart[index].qty -= 1;
+        if (cart[index].qty <= 0) cart.splice(index, 1);
+        saveCart();
+      }
+    }
+
+    if (plus) {
+      const index = Number(plus.dataset.msPlus);
+      if (cart[index]) {
+        cart[index].qty += 1;
+        saveCart();
+      }
+    }
+
+    if (remove) {
+      const index = Number(remove.dataset.msRemove);
+      cart.splice(index, 1);
+      saveCart();
+    }
+
+    if (event.target.closest("[data-ms-close]")) {
+      closeLayers();
+    }
+  });
+
+  [productLayer, cartLayer].forEach(layer => {
+    layer.addEventListener("click", event => {
+      if (event.target === layer) closeLayers();
+    });
+  });
+
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") closeLayers();
+  });
+
+  function buildOrderMessage() {
+    const total = cart.reduce((sum, item) =>
+      sum + item.price * item.qty, 0
+    );
+
+    const lines = cart.map((item, index) =>
+      `${index + 1}. ${item.name}\n` +
+      `   Taille : ${item.size}\n` +
+      `   Couleur : ${item.color}\n` +
+      `   Quantité : ${item.qty}\n` +
+      `   Prix : ${money(item.price * item.qty)}`
+    );
+
+    return (
+      "BONJOUR M&S BOUTIQUE !\n\n" +
+      "Je souhaite confirmer cette commande :\n\n" +
+      lines.join("\n\n") +
+      "\n\nTOTAL ESTIMÉ : " + money(total) +
+      "\n\nMerci de me confirmer la disponibilité et les modalités de livraison."
+    );
+  }
+
+  document.getElementById("msPrepareOrder").addEventListener("click", async () => {
+    if (!cart.length) return;
+
+    const message = buildOrderMessage();
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "Ma commande M&S BOUTIQUE",
+          text: message
+        });
+        return;
+      } catch (error) {
+        if (error.name === "AbortError") return;
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(message);
+      alert("Le récapitulatif de ta commande a été copié. Tu peux maintenant le partager avec M&S BOUTIQUE.");
+    } catch (error) {
+      window.prompt("Copie ton récapitulatif de commande :", message);
+    }
+  });
+
+  renderCart();
+  console.log("M&S BOUTIQUE : fiches produits et panier activés.");
+})();
+         </script>
+  
 
 </body>
 </html>

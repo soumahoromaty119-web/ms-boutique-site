@@ -5,329 +5,481 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#ffffff">
-  <meta name="description" content="M&S BOUTIQUE : La mode qui révèle ta personnalité. Découvrez nos collections de mode.">
-  <title>M&S BOUTIQUE | La mode qui révèle ta personnalité</title>
+  <meta name="description" content="M&S BOUTIQUE — La mode qui révèle ta personnalité.">
+  <title>M&S BOUTIQUE | Mode & Élégance</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
 
   <style>
+    :root {
+      --purple: #633b91;
+      --deep: #30243b;
+      --lavender: #f3edf8;
+      --white: #fff;
+      --muted: #817889;
+    }
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
+    html { scroll-behavior: smooth; }
+
     body {
-      font-family: Arial, sans-serif;
-      background: #fff;
-      color: #292331;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--deep);
+      background: white;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    .topbar {
+      background: var(--deep);
+      color: white;
+      text-align: center;
+      padding: 9px;
+      font-size: 11px;
+      letter-spacing: 1px;
     }
 
     header {
-      padding: 18px 6%;
+      background: white;
+      padding: 18px 7%;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid #eee8f2;
+      border-bottom: 1px solid #f0ebf3;
       position: sticky;
       top: 0;
-      background: #fff;
-      z-index: 10;
+      z-index: 20;
     }
 
     .logo {
       font-size: 23px;
-      font-weight: 800;
-      color: #633b91;
+      font-weight: 700;
       letter-spacing: 1px;
+      color: var(--purple);
     }
 
-    .logo span {
-      color: #292331;
-    }
+    .logo span { color: var(--deep); }
 
     nav {
       display: flex;
-      gap: 22px;
+      align-items: center;
+      gap: 27px;
     }
 
     nav a {
-      text-decoration: none;
-      color: #39313f;
-      font-size: 14px;
+      font-size: 13px;
+      font-weight: 600;
+      transition: .2s;
+    }
+
+    nav a:hover { color: var(--purple); }
+
+    .header-actions {
+      display: flex;
+      gap: 17px;
+      font-size: 19px;
     }
 
     .hero {
-      margin: 28px auto;
-      width: 90%;
-      min-height: 390px;
-      border-radius: 18px;
-      background: linear-gradient(120deg, #f5effa, #e6d8f1);
+      margin: 25px auto;
+      width: 92%;
+      min-height: 490px;
+      border-radius: 5px;
+      overflow: hidden;
       display: flex;
       align-items: center;
-      padding: 45px;
-      overflow: hidden;
+      background:
+        linear-gradient(90deg, rgba(30,20,38,.72), rgba(30,20,38,.08)),
+        url('https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=1800&q=85') center 35% / cover;
+      color: white;
     }
 
     .hero-content {
-      max-width: 550px;
+      padding: 55px 7%;
+      max-width: 650px;
     }
 
     .eyebrow {
-      color: #744ba0;
-      text-transform: uppercase;
-      font-size: 12px;
+      font-size: 11px;
       letter-spacing: 3px;
-      font-weight: bold;
+      text-transform: uppercase;
+      font-weight: 700;
     }
 
     h1 {
-      font-size: clamp(35px, 6vw, 58px);
-      line-height: 1.1;
-      margin: 18px 0;
-      color: #30243b;
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(43px, 6vw, 72px);
+      line-height: 1.08;
+      margin: 22px 0;
+      font-weight: 600;
     }
 
     .hero p {
-      color: #62576b;
-      line-height: 1.7;
-      margin-bottom: 25px;
-    }
-
-    .btn {
-      display: inline-block;
-      background: #633b91;
-      color: white;
-      padding: 15px 25px;
-      border-radius: 7px;
-      text-decoration: none;
-      font-weight: bold;
-      border: none;
-      cursor: pointer;
-    }
-
-    section {
-      padding: 55px 6%;
-    }
-
-    .section-title {
-      text-align: center;
-      margin-bottom: 32px;
-    }
-
-    .section-title h2 {
-      font-size: 29px;
-      color: #30243b;
-      margin-bottom: 10px;
-    }
-
-    .section-title p {
-      color: #817889;
+      max-width: 420px;
+      line-height: 1.8;
       font-size: 14px;
+      margin-bottom: 28px;
     }
 
-    .collections {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-    }
-
-    .collection {
-      min-height: 155px;
-      padding: 25px;
-      background: #f7f3fa;
-      border-radius: 12px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+    .button {
+      display: inline-block;
+      padding: 15px 27px;
+      background: var(--purple);
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
       transition: .25s;
     }
 
-    .collection:hover {
-      transform: translateY(-5px);
-      background: #eee5f6;
+    .button:hover {
+      background: #4d2d72;
+      transform: translateY(-2px);
     }
 
-    .collection .symbol {
-      font-size: 30px;
-      margin-bottom: 12px;
+    .section {
+      padding: 65px 7%;
     }
 
-    .collection h3 {
-      color: #533477;
-      font-size: 17px;
+    .section-heading {
+      text-align: center;
+      margin-bottom: 35px;
     }
 
-    .collection p {
-      font-size: 12px;
-      color: #817889;
-      margin-top: 7px;
+    .section-heading small {
+      color: var(--purple);
+      letter-spacing: 3px;
+      font-weight: 700;
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+
+    .section-heading h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 35px;
+      margin: 12px 0;
+    }
+
+    .section-heading p {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .categories {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .category {
+      position: relative;
+      height: 310px;
+      overflow: hidden;
+      background: var(--lavender);
+    }
+
+    .category img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .5s;
+    }
+
+    .category:hover img { transform: scale(1.06); }
+
+    .category-label {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 45px 20px 20px;
+      color: white;
+      background: linear-gradient(transparent, rgba(25,15,35,.7));
+    }
+
+    .category-label h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 25px;
+    }
+
+    .category-label span {
+      font-size: 11px;
+      margin-top: 5px;
+      display: inline-block;
+    }
+
+    .promo {
+      margin: 15px 7% 65px;
+      padding: 55px 25px;
+      text-align: center;
+      background: var(--lavender);
+    }
+
+    .promo small {
+      color: var(--purple);
+      font-weight: 700;
+      letter-spacing: 3px;
+      font-size: 10px;
+    }
+
+    .promo h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 34px;
+      margin: 14px 0;
+    }
+
+    .promo p {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 22px;
     }
 
     .about {
-      background: #faf8fc;
       text-align: center;
-      border-radius: 15px;
-      margin: 0 6% 55px;
-      padding: 45px 25px;
+      padding: 60px 10%;
+      border-top: 1px solid #f0ebf3;
     }
 
     .about h2 {
-      color: #633b91;
-      margin-bottom: 15px;
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      margin-bottom: 18px;
     }
 
     .about p {
       max-width: 650px;
       margin: auto;
-      line-height: 1.8;
-      color: #62576b;
+      color: var(--muted);
+      line-height: 1.9;
+      font-size: 14px;
+    }
+
+    .benefits {
+      background: #faf8fc;
+      padding: 30px 7%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      text-align: center;
+    }
+
+    .benefit strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 7px;
+    }
+
+    .benefit span {
+      color: var(--muted);
+      font-size: 11px;
     }
 
     footer {
-      background: #30243b;
-      color: #fff;
+      background: var(--deep);
+      color: white;
+      padding: 40px 7%;
       text-align: center;
-      padding: 30px 15px;
-      font-size: 13px;
-      line-height: 2;
     }
 
-    footer strong {
-      color: #d9c2f0;
+    footer .logo { color: #d9c2f0; }
+    footer .logo span { color: white; }
+
+    footer p {
+      margin-top: 13px;
+      font-size: 12px;
+      color: #d4cbdc;
     }
 
-    @media (max-width: 650px) {
-      header {
-        padding: 16px 5%;
-      }
+    @media(max-width: 700px) {
+      header { padding: 16px 5%; }
+      .logo { font-size: 19px; }
 
       nav {
-        gap: 12px;
+        gap: 13px;
       }
 
-      nav a {
-        font-size: 11px;
-      }
-
-      .logo {
-        font-size: 18px;
-      }
+      nav a { font-size: 10px; }
+      .header-actions { display: none; }
 
       .hero {
-        min-height: 340px;
-        padding: 28px 22px;
+        min-height: 430px;
+        width: 94%;
+        background-position: 58% center;
       }
 
-      .collections {
+      .hero-content { padding: 35px 23px; }
+
+      h1 { font-size: 45px; }
+
+      .section { padding: 48px 5%; }
+
+      .categories {
         grid-template-columns: repeat(2, 1fr);
         gap: 12px;
       }
 
-      .collection {
-        min-height: 135px;
-        padding: 17px;
-      }
+      .category { height: 230px; }
 
-      section {
-        padding: 40px 5%;
+      .category-label h3 { font-size: 20px; }
+
+      .section-heading h2 { font-size: 29px; }
+
+      .promo { margin: 5px 5% 45px; }
+
+      .benefits {
+        grid-template-columns: 1fr;
+        gap: 23px;
       }
     }
 
-    @media (max-width: 360px) {
-      nav {
-        gap: 8px;
-      }
-
-      nav a {
-        font-size: 10px;
-      }
+    @media(max-width: 360px) {
+      nav { gap: 8px; }
+      nav a { font-size: 9px; }
+      .category { height: 190px; }
     }
   </style>
 </head>
 
 <body>
 
+  <div class="topbar">
+    BIENVENUE CHEZ M&S BOUTIQUE — LA MODE QUI RÉVÈLE TA PERSONNALITÉ
+  </div>
+
   <header>
-    <div class="logo">M&S <span>BOUTIQUE</span></div>
+    <a href="#accueil" class="logo">M&S <span>BOUTIQUE</span></a>
+
     <nav>
       <a href="#accueil">Accueil</a>
       <a href="#collections">Collections</a>
-      <a href="#apropos">À propos</a>
+      <a href="#apropos">Notre univers</a>
     </nav>
+
+    <div class="header-actions">
+      <span>⌕</span>
+      <span>♡</span>
+      <span>♧</span>
+    </div>
   </header>
 
   <main>
     <section class="hero" id="accueil">
       <div class="hero-content">
-        <div class="eyebrow">Bienvenue dans notre univers</div>
-        <h1>La mode qui révèle ta personnalité.</h1>
+        <div class="eyebrow">L'élégance au quotidien</div>
+        <h1>Affirme ton style.<br>Révèle ta personnalité.</h1>
         <p>
-          Découvrez un univers de mode moderne, élégant et inspirant.
-          Trouvez les pièces qui correspondent à votre style.
+          Découvrez une sélection de pièces modernes et élégantes,
+          pensées pour accompagner chaque personnalité et chaque occasion.
         </p>
-        <a href="#collections" class="btn">Découvrir nos collections</a>
+        <a href="#collections" class="button">DÉCOUVRIR LA COLLECTION</a>
       </div>
     </section>
 
-    <section id="collections">
-      <div class="section-title">
+    <section class="section" id="collections">
+      <div class="section-heading">
+        <small>Explorez notre univers</small>
         <h2>Nos collections</h2>
-        <p>Des pièces sélectionnées pour révéler votre personnalité.</p>
+        <p>Trouvez les pièces qui racontent votre style.</p>
       </div>
 
-      <div class="collections">
-        <div class="collection">
-          <div class="symbol">👗</div>
-          <h3>Robes</h3>
-          <p>Élégance au quotidien</p>
-        </div>
+      <div class="categories">
 
-        <div class="collection">
-          <div class="symbol">✨</div>
-          <h3>Jupes</h3>
-          <p>Style et féminité</p>
-        </div>
+        <a class="category" href="#collections">
+          <img src="https://images.unsplash.com/photo-1539008835657-9e8e9680c956?auto=format&fit=crop&w=800&q=80" alt="Collection robes">
+          <div class="category-label">
+            <h3>Robes</h3>
+            <span>Découvrir la collection →</span>
+          </div>
+        </a>
 
-        <div class="collection">
-          <div class="symbol">👚</div>
-          <h3>Hauts</h3>
-          <p>Exprimez votre style</p>
-        </div>
+        <a class="category" href="#collections">
+          <img src="https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?auto=format&fit=crop&w=800&q=80" alt="Collection jupes">
+          <div class="category-label">
+            <h3>Jupes</h3>
+            <span>Découvrir la collection →</span>
+          </div>
+        </a>
 
-        <div class="collection">
-          <div class="symbol">💜</div>
-          <h3>Ensembles</h3>
-          <p>Des looks harmonieux</p>
-        </div>
+        <a class="category" href="#collections">
+          <img src="https://images.unsplash.com/photo-1564257577-1f4d8a7f9a1f?auto=format&fit=crop&w=800&q=80" alt="Collection hauts">
+          <div class="category-label">
+            <h3>Hauts</h3>
+            <span>Découvrir la collection →</span>
+          </div>
+        </a>
 
-        <div class="collection">
-          <div class="symbol">💎</div>
-          <h3>Bijoux</h3>
-          <p>Les détails qui changent tout</p>
-        </div>
+        <a class="category" href="#collections">
+          <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=800&q=80" alt="Collection ensembles">
+          <div class="category-label">
+            <h3>Ensembles</h3>
+            <span>Découvrir la collection →</span>
+          </div>
+        </a>
 
-        <div class="collection">
-          <div class="symbol">👜</div>
-          <h3>Accessoires</h3>
-          <p>La touche finale</p>
-        </div>
+        <a class="category" href="#collections">
+          <img src="https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=800&q=80" alt="Bijoux">
+          <div class="category-label">
+            <h3>Bijoux</h3>
+            <span>Découvrir la collection →</span>
+          </div>
+        </a>
+
+        <a class="category" href="#collections">
+          <img src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=800&q=80" alt="Accessoires">
+          <div class="category-label">
+            <h3>Accessoires</h3>
+            <span>Découvrir la collection →</span>
+          </div>
+        </a>
+
       </div>
     </section>
 
-    <div class="about" id="apropos">
-      <h2>L'univers M&S BOUTIQUE</h2>
+    <section class="promo">
+      <small>L'UNIVERS M&S</small>
+      <h2>Votre style, votre signature.</h2>
+      <p>Explorez nos collections et trouvez votre prochaine pièce coup de cœur.</p>
+      <a href="#collections" class="button">EXPLORER</a>
+    </section>
+
+    <section class="about" id="apropos">
+      <h2>Bienvenue dans notre univers</h2>
       <p>
-        Plus qu'une boutique, M&S BOUTIQUE est un univers
-        où élégance, modernité et personnalité se rencontrent.
-        Notre ambition est de vous accompagner dans
-        l'expression de votre propre style.
+        M&S BOUTIQUE est née d'une inspiration simple :
+        donner vie à une vision de la mode où élégance,
+        modernité et personnalité se rencontrent.
+        Plus qu'une boutique, nous souhaitons créer
+        un univers de découverte et de style.
       </p>
+    </section>
+
+    <div class="benefits">
+      <div class="benefit">
+        <strong>Livraison en Côte d'Ivoire</strong>
+        <span>Partout dans le pays</span>
+      </div>
+      <div class="benefit">
+        <strong>Paiement sécurisé</strong>
+        <span>Des solutions adaptées</span>
+      </div>
+      <div class="benefit">
+        <strong>Un service à votre écoute</strong>
+        <span>Nous sommes là pour vous</span>
+      </div>
     </div>
   </main>
 
   <footer>
-    <strong>M&S BOUTIQUE</strong><br>
-    La mode qui révèle ta personnalité.<br>
-    Côte d'Ivoire · Tous droits réservés
+    <div class="logo">M&S <span>BOUTIQUE</span></div>
+    <p>La mode qui révèle ta personnalité.</p>
+    <p>© 2026 M&S BOUTIQUE — Tous droits réservés.</p>
   </footer>
 
 </body>

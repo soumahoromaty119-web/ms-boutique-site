@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#30243b">
 <meta name="description" content="M&S BOUTIQUE — La mode qui révèle ta personnalité.">
 <title>M&S BOUTIQUE | Mode & Élégance</title>
 
@@ -14,12 +15,14 @@
 <style>
 :root{
   --purple:#633b91;
+  --purple-light:#9568c2;
   --deep:#30243b;
   --lavender:#f3edf8;
   --white:#fff;
   --muted:#817889;
   --border:#eee8f3;
   --ease:cubic-bezier(.2,.8,.2,1);
+  --shadow:0 25px 65px rgba(48,36,59,.13);
 }
 
 *{margin:0;padding:0;box-sizing:border-box}
@@ -32,41 +35,129 @@ html{
 body{
   font-family:'DM Sans',sans-serif;
   color:var(--deep);
-  background:white;
+  background:#fff;
   overflow-x:hidden;
-  perspective:1200px;
+  perspective:1400px;
 }
+
+body.loading{overflow:hidden}
 
 a{text-decoration:none;color:inherit}
 button,input{font:inherit}
 button{cursor:pointer}
 
+::selection{
+  background:var(--purple);
+  color:white;
+}
+
+/* INTRO CINÉMATIQUE */
+
+.preloader{
+  position:fixed;
+  inset:0;
+  z-index:100000;
+  background:var(--deep);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  color:white;
+  transition:opacity .8s ease,visibility .8s;
+}
+
+.preloader.hide{
+  opacity:0;
+  visibility:hidden;
+}
+
+.preloader-logo{
+  font-size:35px;
+  font-weight:800;
+  letter-spacing:5px;
+  animation:preloaderPulse 1.5s ease-in-out infinite;
+}
+
+.preloader-logo span{color:#c9a8e9}
+
+.preloader-line{
+  width:140px;
+  height:2px;
+  margin-top:24px;
+  background:rgba(255,255,255,.15);
+  overflow:hidden;
+}
+
+.preloader-line::after{
+  content:"";
+  display:block;
+  height:100%;
+  width:45%;
+  background:#d9b8f7;
+  animation:loaderMove 1.1s ease-in-out infinite;
+}
+
+.preloader small{
+  margin-top:15px;
+  font-size:9px;
+  letter-spacing:3px;
+  color:#d4c4e2;
+}
+
+/* FOND VIVANT */
+
 body::before,
 body::after{
   content:"";
   position:fixed;
-  z-index:-1;
+  z-index:-2;
   pointer-events:none;
   border-radius:50%;
-  filter:blur(45px);
+  filter:blur(65px);
 }
 
 body::before{
-  width:230px;
-  height:230px;
-  top:24%;
-  left:-150px;
-  background:rgba(181,139,220,.17);
-  animation:ambientOne 16s ease-in-out infinite alternate;
+  width:300px;
+  height:300px;
+  top:18%;
+  left:-210px;
+  background:rgba(181,139,220,.19);
+  animation:ambientOne 18s ease-in-out infinite alternate;
 }
 
 body::after{
-  width:260px;
-  height:260px;
-  right:-170px;
+  width:320px;
+  height:320px;
+  right:-220px;
   top:65%;
-  background:rgba(217,193,239,.2);
-  animation:ambientTwo 19s ease-in-out infinite alternate;
+  background:rgba(217,193,239,.24);
+  animation:ambientTwo 21s ease-in-out infinite alternate;
+}
+
+#ambientCanvas{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100%;
+  z-index:-1;
+  pointer-events:none;
+  opacity:.65;
+}
+
+/* PROGRESSION */
+
+#msScrollProgress{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:4px;
+  transform:scaleX(0);
+  transform-origin:left;
+  background:linear-gradient(90deg,#8b5cf6,#e1b8ff,#6d28d9);
+  z-index:99999;
+  pointer-events:none;
+  box-shadow:0 0 15px rgba(160,100,220,.7);
 }
 
 /* BARRE DU HAUT */
@@ -75,29 +166,46 @@ body::after{
   background:var(--deep);
   color:white;
   text-align:center;
-  padding:10px;
+  padding:11px;
   font-size:10px;
-  letter-spacing:1.2px;
-  animation:topbarIn .8s ease both;
+  letter-spacing:1.5px;
+  position:relative;
+  overflow:hidden;
+}
+
+.topbar::after{
+  content:"";
+  position:absolute;
+  top:0;
+  left:-100%;
+  width:50%;
+  height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);
+  animation:shine 6s ease-in-out infinite;
 }
 
 /* EN-TÊTE */
 
 header{
-  background:white;
+  background:rgba(255,255,255,.91);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
   padding:17px 7%;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  border-bottom:1px solid #f0ebf3;
+  border-bottom:1px solid rgba(240,235,243,.8);
   position:sticky;
   top:0;
-  z-index:100;
-  transition:box-shadow .35s,background .35s;
+  z-index:1000;
+  transition:box-shadow .4s,background .4s,padding .4s;
 }
 
 header.scrolled{
-  box-shadow:0 7px 25px rgba(48,36,59,.09);
+  box-shadow:0 10px 35px rgba(48,36,59,.1);
+  padding-top:12px;
+  padding-bottom:12px;
+  background:rgba(255,255,255,.96);
 }
 
 .logo{
@@ -105,34 +213,34 @@ header.scrolled{
   font-weight:800;
   letter-spacing:1px;
   color:var(--purple);
-  transition:transform .3s;
+  transition:transform .4s var(--ease);
 }
 
-.logo:hover{transform:scale(1.04)}
+.logo:hover{transform:scale(1.06)}
 .logo span{color:var(--deep)}
 
 nav{
   display:flex;
   align-items:center;
-  gap:25px;
+  gap:27px;
 }
 
 nav a{
   font-size:12px;
-  font-weight:600;
+  font-weight:700;
   position:relative;
-  transition:color .25s;
+  transition:color .3s;
 }
 
 nav a::after{
   content:"";
   position:absolute;
   left:0;
-  bottom:-7px;
+  bottom:-8px;
   height:2px;
   width:0;
   background:var(--purple);
-  transition:width .3s;
+  transition:width .4s var(--ease);
 }
 
 nav a:hover{color:var(--purple)}
@@ -145,34 +253,34 @@ nav a:hover::after{width:100%}
   color:var(--deep);
   font-size:25px;
   padding:4px;
-  transition:transform .3s;
+  transition:transform .35s;
 }
 
-/* ACCUEIL */
+/* ACCUEIL CINÉMATIQUE */
 
 .hero{
   margin:24px auto;
   width:92%;
-  min-height:490px;
-  border-radius:7px;
+  min-height:550px;
+  border-radius:12px;
   overflow:hidden;
   display:flex;
   align-items:center;
   position:relative;
-  background:linear-gradient(90deg,rgba(30,20,38,.72),rgba(30,20,38,.08));
+  background:#30243b;
   color:white;
   isolation:isolate;
   transform-style:preserve-3d;
-  box-shadow:0 22px 55px rgba(48,36,59,.15);
+  box-shadow:0 30px 80px rgba(48,36,59,.2);
 }
 
 .hero::before{
   content:"";
   position:absolute;
-  inset:0;
+  inset:-4%;
   z-index:-2;
-  background:url('https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=1800&q=85') center 35%/cover;
-  animation:heroZoom 17s ease-in-out infinite alternate;
+  background:url('https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=1800&q=90') center 35%/cover;
+  animation:heroZoom 20s ease-in-out infinite alternate;
   will-change:transform;
 }
 
@@ -181,106 +289,140 @@ nav a:hover::after{width:100%}
   position:absolute;
   inset:0;
   z-index:-1;
-  background:linear-gradient(90deg,rgba(30,20,38,.78),rgba(30,20,38,.15));
+  background:
+    linear-gradient(90deg,rgba(28,17,39,.88),rgba(40,25,52,.52) 48%,rgba(30,20,38,.08)),
+    linear-gradient(0deg,rgba(30,20,38,.25),transparent);
 }
 
 .hero-content{
-  max-width:620px;
-  padding:55px 7%;
-  animation:fadeUp 1s .2s both;
+  max-width:680px;
+  padding:65px 7%;
+  position:relative;
+  z-index:2;
+  animation:heroEntrance 1.3s .25s both;
 }
 
 .hero-tag{
-  display:inline-block;
-  padding:9px 16px;
-  border:1px solid rgba(255,255,255,.5);
+  display:inline-flex;
+  padding:10px 17px;
+  border:1px solid rgba(255,255,255,.55);
   border-radius:30px;
   font-size:10px;
-  letter-spacing:2px;
-  margin-bottom:23px;
-  backdrop-filter:blur(8px);
+  letter-spacing:2.5px;
+  margin-bottom:25px;
+  backdrop-filter:blur(10px);
+  background:rgba(255,255,255,.08);
+  box-shadow:0 0 25px rgba(255,255,255,.07);
 }
 
 h1{
   font-family:'Playfair Display',serif;
-  font-size:clamp(42px,6vw,76px);
+  font-size:clamp(43px,6vw,78px);
   line-height:1.08;
   font-weight:600;
-  margin-bottom:20px;
+  margin-bottom:22px;
+  text-shadow:0 5px 30px rgba(0,0,0,.15);
 }
 
 .hero-content p{
   font-size:14px;
-  line-height:1.9;
-  max-width:430px;
-  margin-bottom:30px;
+  line-height:1.95;
+  max-width:450px;
+  margin-bottom:32px;
+  color:rgba(255,255,255,.9);
 }
 
 .primary-btn{
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  padding:15px 25px;
+  gap:12px;
+  padding:16px 27px;
   background:white;
   color:var(--purple);
-  border-radius:3px;
+  border-radius:4px;
   font-size:11px;
   font-weight:800;
   letter-spacing:1px;
-  transition:all .35s var(--ease);
+  transition:all .45s var(--ease);
+  position:relative;
+  overflow:hidden;
 }
+
+.primary-btn::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:-120%;
+  width:100%;
+  height:100%;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.7),transparent);
+  transition:left .7s;
+}
+
+.primary-btn:hover::before{left:120%}
 
 .primary-btn:hover{
   background:var(--purple);
   color:white;
-  transform:translateY(-5px);
-  box-shadow:0 12px 25px rgba(0,0,0,.2);
+  transform:translateY(-6px);
+  box-shadow:0 15px 35px rgba(0,0,0,.25);
 }
 
 .hero-orbit{
   position:absolute;
   right:12%;
-  top:18%;
-  width:180px;
-  height:180px;
-  border:1px solid rgba(255,255,255,.4);
+  top:17%;
+  width:210px;
+  height:210px;
+  border:1px solid rgba(255,255,255,.38);
   border-radius:50%;
-  animation:orbitFloat 6s ease-in-out infinite;
+  animation:orbitFloat 7s ease-in-out infinite;
   pointer-events:none;
 }
 
-.hero-orbit::before,
-.hero-orbit::after{
+.hero-orbit::before{
   content:"";
   position:absolute;
+  inset:15px;
+  border:1px solid rgba(255,255,255,.2);
   border-radius:50%;
-  background:rgba(255,255,255,.65);
-  animation:spark 3s infinite;
-}
-
-.hero-orbit::before{
-  width:9px;
-  height:9px;
-  top:15%;
-  left:15%;
+  animation:orbitSpin 18s linear infinite;
 }
 
 .hero-orbit::after{
-  width:6px;
-  height:6px;
-  bottom:18%;
-  right:10%;
-  animation-delay:1s;
+  content:"✦";
+  position:absolute;
+  right:10px;
+  top:25px;
+  font-size:27px;
+  color:#fff;
+  text-shadow:0 0 25px white;
+  animation:spark 3s ease-in-out infinite;
 }
 
-/* BANDE D'ANIMATION */
+.hero-glow{
+  position:absolute;
+  width:300px;
+  height:300px;
+  right:5%;
+  bottom:-170px;
+  border-radius:50%;
+  background:rgba(194,145,239,.3);
+  filter:blur(75px);
+  pointer-events:none;
+}
+
+/* BANDE DÉFILANTE */
 
 .marquee{
   overflow:hidden;
   background:var(--lavender);
   color:var(--purple);
-  padding:16px 0;
+  padding:17px 0;
   white-space:nowrap;
+  border-top:1px solid #eee3f6;
+  border-bottom:1px solid #eee3f6;
 }
 
 .marquee-track{
@@ -290,7 +432,7 @@ h1{
 }
 
 .marquee-track span{
-  padding:0 28px;
+  padding:0 30px;
   font-size:11px;
   font-weight:800;
   letter-spacing:2px;
@@ -298,13 +440,11 @@ h1{
 
 /* SECTIONS */
 
-.section{
-  padding:75px 7%;
-}
+.section{padding:85px 7%}
 
 .section-heading{
   text-align:center;
-  margin-bottom:40px;
+  margin-bottom:45px;
 }
 
 .section-heading small{
@@ -313,104 +453,138 @@ h1{
   font-size:10px;
   font-weight:800;
   letter-spacing:3px;
-  margin-bottom:12px;
+  margin-bottom:13px;
 }
 
 .section-heading h2{
   font-family:'Playfair Display',serif;
-  font-size:38px;
+  font-size:clamp(29px,4vw,43px);
   font-weight:600;
 }
 
 .section-heading p{
   color:var(--muted);
   font-size:12px;
-  margin-top:12px;
+  margin-top:13px;
+  line-height:1.8;
 }
 
 /* COLLECTIONS */
 
 .categories{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:20px;
+  grid-template-columns:repeat(4,1fr);
+  gap:18px;
 }
 
 .category{
-  height:290px;
+  height:320px;
   position:relative;
-  border-radius:7px;
+  border-radius:9px;
   overflow:hidden;
   background:#eee;
   transform-style:preserve-3d;
-  transition:transform .5s var(--ease),box-shadow .5s;
-  box-shadow:0 10px 25px rgba(48,36,59,.08);
+  transition:transform .65s var(--ease),box-shadow .65s;
+  box-shadow:0 12px 30px rgba(48,36,59,.08);
 }
 
 .category img{
   width:100%;
   height:100%;
   object-fit:cover;
-  transition:transform .8s var(--ease),filter .5s;
+  transition:transform 1s var(--ease),filter .6s;
+}
+
+.category::before{
+  content:"";
+  position:absolute;
+  z-index:1;
+  inset:0;
+  background:linear-gradient(transparent 30%,rgba(30,20,38,.82));
+  transition:opacity .5s;
 }
 
 .category::after{
   content:"";
   position:absolute;
+  z-index:1;
   inset:0;
-  background:linear-gradient(transparent 35%,rgba(30,20,38,.75));
+  border:1px solid rgba(255,255,255,.35);
+  border-radius:9px;
+  opacity:0;
+  transform:scale(.92);
+  transition:all .6s var(--ease);
+  pointer-events:none;
 }
 
 .category:hover{
-  transform:translateY(-9px) rotateX(2deg);
-  box-shadow:0 22px 40px rgba(48,36,59,.17);
+  transform:translateY(-12px) scale(1.015);
+  box-shadow:0 25px 55px rgba(48,36,59,.2);
 }
 
-.category:hover img{transform:scale(1.1)}
+.category:hover img{
+  transform:scale(1.13);
+  filter:saturate(1.12);
+}
+
+.category:hover::after{
+  opacity:1;
+  transform:scale(.96);
+}
 
 .category-label{
   position:absolute;
   z-index:2;
-  bottom:22px;
+  bottom:24px;
   left:22px;
   color:white;
+  transform:translateY(8px);
+  transition:transform .5s var(--ease);
 }
+
+.category:hover .category-label{transform:translateY(0)}
 
 .category-label h3{
   font-family:'Playfair Display',serif;
   font-size:25px;
-  margin-bottom:5px;
+  margin-bottom:7px;
 }
 
 .category-label span{
   font-size:10px;
-  letter-spacing:1px;
+  letter-spacing:1.5px;
 }
 
 /* PRODUITS */
 
-.products-section{background:#fcfaff}
+.products-section{
+  background:
+    radial-gradient(circle at 10% 20%,rgba(221,198,242,.18),transparent 30%),
+    #fcfaff;
+  position:relative;
+}
 
 .search-wrap{
-  max-width:470px;
+  max-width:500px;
   margin:0 auto 25px;
   position:relative;
 }
 
 .search-wrap input{
   width:100%;
-  padding:15px 20px;
+  padding:16px 22px;
   border:1px solid var(--border);
   border-radius:30px;
   outline:none;
   background:white;
   font-size:12px;
-  transition:border .3s,box-shadow .3s;
+  transition:border .35s,box-shadow .35s,transform .35s;
 }
 
 .search-wrap input:focus{
   border-color:var(--purple);
-  box-shadow:0 0 0 4px rgba(99,59,145,.08);
+  box-shadow:0 0 0 5px rgba(99,59,145,.09);
+  transform:translateY(-2px);
 }
 
 .filters{
@@ -418,18 +592,18 @@ h1{
   justify-content:center;
   flex-wrap:wrap;
   gap:10px;
-  margin-bottom:35px;
+  margin-bottom:38px;
 }
 
 .filter-btn{
-  padding:10px 17px;
+  padding:11px 19px;
   border:1px solid var(--border);
   border-radius:30px;
   background:white;
   color:var(--deep);
   font-size:10px;
   font-weight:700;
-  transition:all .3s;
+  transition:all .35s var(--ease);
 }
 
 .filter-btn:hover,
@@ -437,147 +611,165 @@ h1{
   background:var(--purple);
   color:white;
   border-color:var(--purple);
-  transform:translateY(-2px);
+  transform:translateY(-3px);
+  box-shadow:0 8px 20px rgba(99,59,145,.2);
 }
 
 .products-grid{
   display:grid;
   grid-template-columns:repeat(3,1fr);
-  gap:25px;
+  gap:26px;
 }
 
 .product-card{
   background:white;
   border:1px solid var(--border);
-  border-radius:7px;
+  border-radius:10px;
   overflow:hidden;
   position:relative;
   transform-style:preserve-3d;
-  transition:transform .45s var(--ease),box-shadow .45s;
-  box-shadow:0 8px 25px rgba(48,36,59,.05);
+  transition:transform .55s var(--ease),box-shadow .55s;
+  box-shadow:0 8px 25px rgba(48,36,59,.055);
 }
 
 .product-card:hover{
-  transform:translateY(-8px);
-  box-shadow:0 20px 40px rgba(48,36,59,.13);
+  transform:translateY(-11px);
+  box-shadow:0 25px 55px rgba(48,36,59,.14);
 }
 
 .product-image{
-  height:330px;
+  height:360px;
   background:linear-gradient(135deg,#f6effa,#e8dcef);
-  display:flex;
-  align-items:center;
-  justify-content:center;
   position:relative;
   overflow:hidden;
 }
 
-.product-image::before{
+.product-image img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transition:transform .9s var(--ease),filter .6s;
+}
+
+.product-card:hover .product-image img{
+  transform:scale(1.09);
+  filter:saturate(1.1);
+}
+
+.product-image::after{
   content:"";
   position:absolute;
-  width:210px;
-  height:210px;
-  border-radius:50%;
-  background:rgba(255,255,255,.42);
-  animation:floatCircle 7s ease-in-out infinite alternate;
-}
-
-.product-image span{
-  position:relative;
-  z-index:1;
-  font-size:78px;
-  filter:drop-shadow(0 12px 15px rgba(48,36,59,.14));
-  transition:transform .5s;
-}
-
-.product-card:hover .product-image span{
-  transform:translateY(-8px) scale(1.12) rotate(-5deg);
+  inset:0;
+  background:linear-gradient(0deg,rgba(48,36,59,.15),transparent 35%);
+  pointer-events:none;
 }
 
 .product-status{
   position:absolute;
   top:15px;
   left:15px;
+  z-index:2;
   background:#e7f8ee;
   color:#218653;
   border-radius:30px;
-  padding:7px 12px;
+  padding:8px 13px;
   font-size:9px;
   font-weight:800;
   animation:availablePulse 3s infinite;
 }
 
-.product-info{padding:20px}
+.product-info{padding:22px}
 
 .product-info h3{
   font-family:'Playfair Display',serif;
   font-size:19px;
-  margin-bottom:9px;
+  margin-bottom:10px;
+  line-height:1.4;
 }
 
 .product-info p{
   color:var(--muted);
   font-size:11px;
-  line-height:1.7;
-  margin-bottom:14px;
+  line-height:1.8;
+  margin-bottom:13px;
 }
 
 .product-price{
   color:var(--purple);
   font-size:13px;
   font-weight:800;
-  line-height:1.8;
+  line-height:1.9;
 }
 
 .product-colors{
   display:flex;
   flex-wrap:wrap;
-  gap:7px;
-  margin-top:13px;
+  gap:8px;
+  margin-top:15px;
 }
 
 .product-colors span{
-  width:17px;
-  height:17px;
+  width:19px;
+  height:19px;
   border-radius:50%;
-  border:1px solid rgba(0,0,0,.12);
+  border:1px solid rgba(0,0,0,.15);
+  transition:transform .3s;
 }
+
+.product-colors span:hover{transform:scale(1.3)}
 
 .no-products{
   display:none;
   text-align:center;
   color:var(--muted);
   font-size:13px;
-  padding:30px;
+  padding:35px;
   grid-column:1/-1;
 }
 
 /* PROMOTION */
 
 .promo{
-  margin:10px 7% 70px;
-  padding:55px 25px;
+  margin:10px 7% 75px;
+  padding:65px 25px;
   text-align:center;
   color:white;
-  border-radius:8px;
+  border-radius:12px;
   background:linear-gradient(120deg,#513078,#8963ad,#513078);
-  background-size:200% 200%;
+  background-size:220% 220%;
   animation:heroLight 9s ease infinite alternate;
   position:relative;
   overflow:hidden;
+  box-shadow:0 25px 55px rgba(81,48,120,.2);
 }
+
+.promo::before,
+.promo::after{
+  content:"✦";
+  position:absolute;
+  color:rgba(255,255,255,.24);
+  font-size:100px;
+  animation:spark 5s infinite;
+}
+
+.promo::before{left:7%;top:5%}
+.promo::after{right:7%;bottom:0;animation-delay:2s}
 
 .promo h2{
   font-family:'Playfair Display',serif;
-  font-size:35px;
-  margin-bottom:13px;
+  font-size:clamp(28px,4vw,40px);
+  margin-bottom:15px;
+  position:relative;
+  z-index:1;
 }
 
 .promo p{
   font-size:12px;
-  line-height:1.8;
-  max-width:550px;
+  line-height:1.9;
+  max-width:570px;
   margin:auto;
+  position:relative;
+  z-index:1;
 }
 
 /* AVANTAGES */
@@ -589,37 +781,63 @@ h1{
 }
 
 .benefit{
-  padding:28px 20px;
+  padding:34px 22px;
   text-align:center;
   border:1px solid var(--border);
-  border-radius:7px;
-  transition:all .4s var(--ease);
-  background:white;
+  border-radius:10px;
+  transition:all .5s var(--ease);
+  background:rgba(255,255,255,.9);
+  position:relative;
+  overflow:hidden;
+}
+
+.benefit::before{
+  content:"";
+  position:absolute;
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  background:rgba(190,151,221,.12);
+  top:-80px;
+  right:-80px;
+  transition:all .6s;
+}
+
+.benefit:hover::before{
+  width:250px;
+  height:250px;
+  top:-100px;
+  right:-100px;
 }
 
 .benefit:hover{
-  transform:translateY(-8px);
-  box-shadow:0 15px 30px rgba(48,36,59,.08);
+  transform:translateY(-10px);
+  box-shadow:0 20px 40px rgba(48,36,59,.1);
   border-color:#d8c5e8;
 }
 
 .benefit-icon{
-  font-size:32px;
-  margin-bottom:15px;
+  font-size:35px;
+  margin-bottom:17px;
   display:block;
-  animation:orbitFloat 5s ease-in-out infinite;
+  position:relative;
+  transition:transform .5s;
+}
+
+.benefit:hover .benefit-icon{
+  transform:translateY(-7px) rotate(-8deg) scale(1.12);
 }
 
 .benefit strong{
   display:block;
   font-size:13px;
-  margin-bottom:8px;
+  margin-bottom:9px;
 }
 
 .benefit span{
   color:var(--muted);
   font-size:11px;
-  line-height:1.7;
+  line-height:1.8;
 }
 
 /* À PROPOS */
@@ -627,17 +845,33 @@ h1{
 .about{
   background:var(--lavender);
   text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+
+.about::before{
+  content:"M&S";
+  position:absolute;
+  font-family:'Playfair Display',serif;
+  font-size:clamp(120px,25vw,300px);
+  font-weight:700;
+  color:rgba(99,59,145,.035);
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
 }
 
 .about-content{
-  max-width:700px;
+  max-width:730px;
   margin:auto;
+  position:relative;
 }
 
 .about-content p{
   color:#71677b;
   font-size:13px;
-  line-height:2;
+  line-height:2.1;
 }
 
 /* PIED DE PAGE */
@@ -645,16 +879,31 @@ h1{
 footer{
   background:var(--deep);
   color:white;
-  padding:45px 7% 25px;
+  padding:55px 7% 25px;
   text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+
+footer::before{
+  content:"";
+  position:absolute;
+  width:300px;
+  height:300px;
+  left:50%;
+  top:-250px;
+  transform:translateX(-50%);
+  border-radius:50%;
+  background:rgba(159,108,201,.22);
+  filter:blur(60px);
 }
 
 .footer-logo{
-  font-size:24px;
+  font-size:26px;
   font-weight:800;
   color:#d8b9f1;
   letter-spacing:2px;
-  margin-bottom:12px;
+  margin-bottom:13px;
 }
 
 footer p{
@@ -667,20 +916,23 @@ footer p{
   display:flex;
   justify-content:center;
   flex-wrap:wrap;
-  gap:22px;
-  margin:25px 0;
+  gap:24px;
+  margin:27px 0;
 }
 
 .footer-links a{
   font-size:11px;
-  transition:color .3s;
+  transition:color .3s,transform .3s;
 }
 
-.footer-links a:hover{color:#d8b9f1}
+.footer-links a:hover{
+  color:#d8b9f1;
+  transform:translateY(-3px);
+}
 
 .copyright{
   border-top:1px solid rgba(255,255,255,.12);
-  padding-top:20px;
+  padding-top:22px;
   margin-top:25px;
   color:#b9afc2;
   font-size:10px;
@@ -693,34 +945,37 @@ footer p{
   bottom:22px;
   right:20px;
   z-index:90;
-  width:43px;
-  height:43px;
-  border:0;
+  width:46px;
+  height:46px;
+  border:1px solid rgba(255,255,255,.3);
   border-radius:50%;
   background:var(--purple);
   color:white;
-  font-size:19px;
-  box-shadow:0 5px 18px rgba(48,36,59,.2);
+  font-size:20px;
+  box-shadow:0 8px 25px rgba(48,36,59,.24);
   opacity:0;
   visibility:hidden;
-  transform:translateY(15px);
-  transition:all .35s;
+  transform:translateY(20px) scale(.8);
+  transition:all .4s var(--ease);
 }
 
 .back-top.visible{
   opacity:1;
   visibility:visible;
-  transform:translateY(0);
+  transform:translateY(0) scale(1);
 }
 
-.back-top:hover{transform:translateY(-5px) scale(1.08)}
+.back-top:hover{
+  transform:translateY(-6px) scale(1.1);
+  box-shadow:0 12px 30px rgba(99,59,145,.4);
+}
 
 /* APPARITION AU DÉFILEMENT */
 
 .reveal{
   opacity:0;
-  transform:translateY(35px);
-  transition:opacity .85s ease,transform .85s var(--ease);
+  transform:translateY(45px);
+  transition:opacity .9s ease,transform .9s var(--ease);
   transition-delay:var(--delay,0ms);
 }
 
@@ -731,7 +986,7 @@ footer p{
 
 .category.reveal,
 .product-card.reveal{
-  transform:translateY(35px) scale(.97);
+  transform:translateY(45px) scale(.94);
 }
 
 .category.reveal.show,
@@ -739,52 +994,41 @@ footer p{
   transform:translateY(0) scale(1);
 }
 
-/* BARRE DE PROGRESSION */
-
-#msScrollProgress{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:4px;
-  background:linear-gradient(90deg,#8b5cf6,#c084fc,#6d28d9);
-  transform:scaleX(0);
-  transform-origin:left;
-  z-index:99999;
-  pointer-events:none;
-  transition:transform .12s linear;
-}
-
 /* ANIMATIONS */
 
-@keyframes topbarIn{
-  from{opacity:0;transform:translateY(-12px)}
-  to{opacity:1;transform:translateY(0)}
+@keyframes preloaderPulse{
+  0%,100%{opacity:.65;transform:scale(.97)}
+  50%{opacity:1;transform:scale(1.04)}
 }
 
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(28px)}
-  to{opacity:1;transform:translateY(0)}
+@keyframes loaderMove{
+  from{transform:translateX(-120%)}
+  to{transform:translateX(340%)}
+}
+
+@keyframes shine{
+  0%,70%{left:-100%}
+  100%{left:150%}
+}
+
+@keyframes heroEntrance{
+  from{opacity:0;transform:translateY(45px) translateZ(-40px)}
+  to{opacity:1;transform:translateY(0) translateZ(0)}
 }
 
 @keyframes heroZoom{
   from{transform:scale(1)}
-  to{transform:scale(1.09)}
-}
-
-@keyframes floatCircle{
-  from{transform:translate(0,0) scale(1)}
-  to{transform:translate(25px,-15px) scale(1.12)}
+  to{transform:scale(1.12)}
 }
 
 @keyframes ambientOne{
   from{transform:translate(0,0) scale(.9)}
-  to{transform:translate(80px,35px) scale(1.2)}
+  to{transform:translate(100px,45px) scale(1.2)}
 }
 
 @keyframes ambientTwo{
   from{transform:translate(0,0) scale(1)}
-  to{transform:translate(-70px,-45px) scale(1.2)}
+  to{transform:translate(-85px,-50px) scale(1.25)}
 }
 
 @keyframes heroLight{
@@ -793,17 +1037,21 @@ footer p{
 }
 
 @keyframes orbitFloat{
-  0%,100%{transform:translateY(0) rotate(0deg)}
-  50%{transform:translateY(-20px) rotate(12deg)}
+  0%,100%{transform:translateY(0) rotate(0)}
+  50%{transform:translateY(-25px) rotate(12deg)}
+}
+
+@keyframes orbitSpin{
+  to{transform:rotate(360deg)}
 }
 
 @keyframes spark{
-  0%,100%{opacity:.55;transform:scale(.8)}
-  50%{opacity:1;transform:scale(1.35)}
+  0%,100%{opacity:.5;transform:scale(.85) rotate(0)}
+  50%{opacity:1;transform:scale(1.25) rotate(20deg)}
 }
 
 @keyframes availablePulse{
-  0%{box-shadow:0 0 0 0 rgba(53,184,121,.45)}
+  0%{box-shadow:0 0 0 0 rgba(53,184,121,.4)}
   70%{box-shadow:0 0 0 8px rgba(53,184,121,0)}
   100%{box-shadow:0 0 0 0 rgba(53,184,121,0)}
 }
@@ -813,7 +1061,15 @@ footer p{
   to{transform:translateX(-50%)}
 }
 
-/* MENU MOBILE */
+/* TABLETTES */
+
+@media(min-width:701px) and (max-width:1050px){
+  .categories{grid-template-columns:repeat(2,1fr)}
+  .products-grid{grid-template-columns:repeat(2,1fr)}
+  .category{height:300px}
+}
+
+/* MOBILE */
 
 @media(max-width:700px){
 
@@ -827,21 +1083,22 @@ footer p{
     top:100%;
     left:0;
     right:0;
-    background:white;
+    background:rgba(255,255,255,.98);
+    backdrop-filter:blur(15px);
     padding:0 5%;
     flex-direction:column;
     align-items:flex-start;
     gap:0;
     border-bottom:0;
-    box-shadow:0 10px 20px rgba(48,36,59,.06);
+    box-shadow:0 12px 25px rgba(48,36,59,.08);
     max-height:0;
     overflow:hidden;
     opacity:0;
-    transition:max-height .4s ease,opacity .35s,padding .4s;
+    transition:max-height .45s ease,opacity .35s,padding .4s;
   }
 
   nav.open{
-    max-height:300px;
+    max-height:320px;
     opacity:1;
     padding:20px 5%;
     border-bottom:1px solid var(--border);
@@ -849,9 +1106,9 @@ footer p{
 
   nav a{
     font-size:13px;
-    padding:7px 0;
+    padding:9px 0;
     opacity:0;
-    transform:translateX(-18px);
+    transform:translateX(-20px);
     transition:opacity .35s,transform .45s var(--ease),color .25s;
   }
 
@@ -871,84 +1128,76 @@ footer p{
   }
 
   .hero{
-    min-height:430px;
+    min-height:470px;
     width:94%;
-    background-position:58% center;
-    box-shadow:0 12px 30px rgba(48,36,59,.12);
+    border-radius:9px;
   }
 
   .hero::before{background-position:58% center}
-  .hero-content{padding:35px 23px}
-  h1{font-size:45px}
+  .hero-content{padding:38px 24px}
+  h1{font-size:clamp(39px,10vw,52px)}
 
+  .hero-content p{font-size:12px}
   .hero-orbit{
     width:115px;
     height:115px;
-    right:5%;
-    top:10%;
-    opacity:.55;
+    right:4%;
+    top:8%;
+    opacity:.5;
   }
 
-  .section{padding:48px 5%}
+  .section{padding:55px 5%}
 
   .categories{
     grid-template-columns:repeat(2,1fr);
     gap:12px;
   }
 
-  .category{height:220px}
-  .category-label h3{font-size:20px}
-  .section-heading h2{font-size:29px}
+  .category{height:225px}
+  .category-label{left:14px;bottom:17px}
+  .category-label h3{font-size:19px}
+  .category-label span{font-size:9px}
+
+  .section-heading h2{font-size:30px}
 
   .products-grid{
     grid-template-columns:1fr;
-    gap:20px;
+    gap:22px;
   }
 
-  .product-image{height:360px}
+  .product-image{height:390px}
+  .product-info{padding:19px}
 
-  .promo{margin:5px 5% 45px}
+  .promo{
+    margin:5px 5% 50px;
+    padding:48px 20px;
+  }
+
+  .promo::before,.promo::after{font-size:55px}
 
   .benefits{
     grid-template-columns:1fr;
-    gap:23px;
+    gap:16px;
   }
 
   .filters{
     justify-content:flex-start;
     overflow-x:auto;
     flex-wrap:nowrap;
-    padding-bottom:8px;
+    padding:5px 2px 12px;
+    scrollbar-width:none;
   }
 
+  .filters::-webkit-scrollbar{display:none}
   .filter-btn{white-space:nowrap}
 
-  body::before,
-  body::after{opacity:.5}
-}
-
-/* TABLETTES */
-
-@media(min-width:701px) and (max-width:1000px){
-  .products-grid{grid-template-columns:repeat(2,1fr)}
-}
-
-/* EFFETS 3D SUR ORDINATEUR */
-
-@media(hover:hover) and (pointer:fine){
-  .category:hover{
-    transform:perspective(900px)
-      rotateX(2deg)
-      rotateY(-2deg)
-      translateY(-9px);
+  .topbar{
+    font-size:9px;
+    letter-spacing:.8px;
   }
 
-  .product-card:hover{
-    transform:perspective(1000px)
-      rotateX(1deg)
-      rotateY(-1deg)
-      translateY(-8px);
-  }
+  body::before,body::after{opacity:.45}
+  #ambientCanvas{opacity:.35}
 }
 
 /* ACCESSIBILITÉ */
@@ -963,7 +1212,9 @@ footer p{
     transition-duration:.01ms!important;
   }
 
-  .reveal{
+  .reveal,
+  .category.reveal,
+  .product-card.reveal{
     opacity:1;
     transform:none;
   }
@@ -971,8 +1222,15 @@ footer p{
 </style>
 </head>
 
-<body>
+<body class="loading">
 
+<div class="preloader" id="preloader">
+  <div class="preloader-logo">M&S <span>BOUTIQUE</span></div>
+  <div class="preloader-line"></div>
+  <small>ÉLÉGANCE EN MOUVEMENT</small>
+</div>
+
+<canvas id="ambientCanvas"></canvas>
 <div id="msScrollProgress"></div>
 
 <div class="topbar">
@@ -1004,9 +1262,12 @@ BIENVENUE CHEZ M&S BOUTIQUE — LA MODE QUI RÉVÈLE TA PERSONNALITÉ
       Découvre une sélection de vêtements pensés pour sublimer ton style,
       révéler ton élégance et accompagner chaque moment de ta vie.
     </p>
-    <a href="#produits" class="primary-btn">DÉCOUVRIR LA COLLECTION</a>
+    <a href="#produits" class="primary-btn">
+      DÉCOUVRIR LA COLLECTION <span>→</span>
+    </a>
   </div>
   <div class="hero-orbit"></div>
+  <div class="hero-glow"></div>
 </section>
 
 <div class="marquee">
@@ -1061,4 +1322,468 @@ BIENVENUE CHEZ M&S BOUTIQUE — LA MODE QUI RÉVÈLE TA PERSONNALITÉ
         <h3>Ensembles</h3>
         <span>DÉCOUVRIR →</span>
       </div>
-        </a>
+    </a>
+
+  </div>
+</section>
+
+<section class="section products-section" id="produits">
+  <div class="section-heading reveal">
+    <small>LA SÉLECTION M&S</small>
+    <h2>Nos articles</h2>
+    <p>Choisis les pièces qui correspondent à ton style.</p>
+  </div>
+
+  <div class="search-wrap reveal">
+    <input type="search" id="productSearch"
+      placeholder="Rechercher un article..."
+      aria-label="Rechercher un article">
+  </div>
+
+  <div class="filters reveal">
+    <button class="filter-btn active" data-filter="tous">Tout voir</button>
+    <button class="filter-btn" data-filter="robes">Robes</button>
+    <button class="filter-btn" data-filter="jupes">Jupes</button>
+    <button class="filter-btn" data-filter="hauts">Hauts</button>
+    <button class="filter-btn" data-filter="ensembles">Ensembles</button>
+  </div>
+
+  <div class="products-grid" id="productsGrid">
+
+    <article class="product-card reveal" data-category="robes"
+      data-name="robe longue rose à volants">
+      <div class="product-image">
+        <img src="https://images.unsplash.com/photo-1539008835657-9e8e9680c956?auto=format&fit=crop&w=900&q=90"
+          alt="Robe longue rose à volants" loading="lazy">
+        <span class="product-status">Disponible</span>
+      </div>
+      <div class="product-info">
+        <h3>Robe longue rose à volants</h3>
+        <p>Une robe élégante et féminine pour révéler ton style.</p>
+        <div class="product-price">
+          XXS – L : 7 000 FCFA<br>
+          XL – XXXL : 8 500 FCFA
+        </div>
+        <div class="product-colors" aria-label="Couleurs disponibles">
+          <span style="background:#171717" title="Noir"></span>
+          <span style="background:#d7c2a2" title="Beige"></span>
+          <span style="background:#c72b3b" title="Rouge"></span>
+          <span style="background:#fff" title="Blanc"></span>
+          <span style="background:#28734c" title="Vert"></span>
+          <span style="background:#3979b9" title="Bleu"></span>
+          <span style="background:#e99ab8" title="Rose"></span>
+        </div>
+      </div>
+    </article>
+
+    <article class="product-card reveal" data-category="ensembles"
+      data-name="ensemble rouge uni">
+      <div class="product-image">
+        <img src="https://images.unsplash.com/photo-1591369822096-ffd140ec948f?auto=format&fit=crop&w=900&q=90"
+          alt="Ensemble rouge uni" loading="lazy">
+        <span class="product-status">Disponible</span>
+      </div>
+      <div class="product-info">
+        <h3>Ensemble rouge uni</h3>
+        <p>Un ensemble chic pour une allure affirmée et moderne.</p>
+        <div class="product-price">
+          XXS – L : 7 000 FCFA<br>
+          XL – XXXL : 8 500 FCFA
+        </div>
+        <div class="product-colors" aria-label="Couleurs disponibles">
+          <span style="background:#c62836" title="Rouge"></span>
+          <span style="background:#171717" title="Noir"></span>
+          <span style="background:#e99ab8" title="Rose"></span>
+          <span style="background:#7543a0" title="Violet"></span>
+          <span style="background:#805438" title="Marron"></span>
+          <span style="background:#fff" title="Blanc"></span>
+          <span style="background:#28734c" title="Vert"></span>
+        </div>
+      </div>
+    </article>
+
+    <article class="product-card reveal" data-category="ensembles"
+      data-name="ensemble blanc et rouge à carreaux">
+      <div class="product-image">
+        <img src="https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&w=900&q=90"
+          alt="Ensemble blanc et rouge à carreaux" loading="lazy">
+        <span class="product-status">Disponible</span>
+      </div>
+      <div class="product-info">
+        <h3>Ensemble blanc et rouge à carreaux</h3>
+        <p>Un look original et élégant pour affirmer ta personnalité.</p>
+        <div class="product-price">
+          XXS – L : 5 500 FCFA<br>
+          XL – XXXL : 7 000 FCFA
+        </div>
+        <div class="product-colors" aria-label="Couleur disponible">
+          <span style="background:repeating-linear-gradient(45deg,#fff 0 5px,#c52d3c 5px 10px)" title="Blanc et rouge à carreaux"></span>
+        </div>
+      </div>
+    </article>
+
+    <div class="no-products" id="noProducts">
+      Aucun article ne correspond à ta recherche.
+    </div>
+
+  </div>
+</section>
+
+<section class="promo reveal">
+  <h2>Ton style, ta signature.</h2>
+  <p>
+    Chez M&S BOUTIQUE, chaque pièce est une occasion d'exprimer
+    ta personnalité avec élégance, confiance et originalité.
+  </p>
+</section>
+
+<section class="section">
+  <div class="section-heading reveal">
+    <small>L'EXPÉRIENCE M&S</small>
+    <h2>Pourquoi nous choisir ?</h2>
+    <p>Une expérience pensée pour te faire plaisir.</p>
+  </div>
+
+  <div class="benefits">
+    <div class="benefit reveal">
+      <span class="benefit-icon">✦</span>
+      <strong>Style & élégance</strong>
+      <span>Des pièces sélectionnées pour révéler ton allure et ta personnalité.</span>
+    </div>
+
+    <div class="benefit reveal">
+      <span class="benefit-icon">♡</span>
+      <strong>Pour toutes les envies</strong>
+      <span>Des styles et des tailles pour accompagner tes différents moments.</span>
+    </div>
+
+    <div class="benefit reveal">
+      <span class="benefit-icon">✧</span>
+      <strong>Une boutique à ton écoute</strong>
+      <span>Une expérience mode pensée autour de tes envies.</span>
+    </div>
+  </div>
+</section>
+
+<section class="section about" id="apropos">
+  <div class="about-content reveal">
+    <div class="section-heading">
+      <small>NOTRE UNIVERS</small>
+      <h2>Bienvenue chez M&S BOUTIQUE</h2>
+    </div>
+    <p>
+      M&S BOUTIQUE est un univers dédié à la mode, à l'élégance
+      et à l'expression de soi. Notre ambition est de te proposer
+      des vêtements qui t'aident à affirmer ton style et à te sentir
+      belle, confiante et unique. Parce que la mode ne consiste pas
+      seulement à porter un vêtement : elle raconte aussi qui tu es.
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="footer-logo">M&S BOUTIQUE</div>
+  <p>La mode qui révèle ta personnalité.</p>
+
+  <div class="footer-links">
+    <a href="#accueil">Accueil</a>
+    <a href="#collections">Collections</a>
+    <a href="#produits">Nos articles</a>
+    <a href="#apropos">À propos</a>
+  </div>
+
+  <div class="copyright">
+    © <span id="currentYear"></span> M&S BOUTIQUE — Tous droits réservés.
+  </div>
+</footer>
+
+<button class="back-top" id="backTop" aria-label="Retour en haut">↑</button>
+
+<script>
+/* INITIALISATION */
+
+document.addEventListener("DOMContentLoaded",function(){
+
+  const body=document.body;
+  const preloader=document.getElementById("preloader");
+
+  window.addEventListener("load",function(){
+    setTimeout(function(){
+      preloader.classList.add("hide");
+      body.classList.remove("loading");
+    },450);
+  });
+
+  setTimeout(function(){
+    if(preloader){
+      preloader.classList.add("hide");
+      body.classList.remove("loading");
+    }
+  },2500);
+
+  /* ANNÉE AUTOMATIQUE */
+
+  document.getElementById("currentYear").textContent=
+    new Date().getFullYear();
+
+  /* MENU MOBILE */
+
+  const menuToggle=document.getElementById("menuToggle");
+  const mainNav=document.getElementById("mainNav");
+
+  menuToggle.addEventListener("click",function(){
+    const opened=mainNav.classList.toggle("open");
+    menuToggle.setAttribute("aria-expanded",opened?"true":"false");
+    menuToggle.textContent=opened?"×":"☰";
+  });
+
+  mainNav.querySelectorAll("a").forEach(function(link){
+    link.addEventListener("click",function(){
+      mainNav.classList.remove("open");
+      menuToggle.setAttribute("aria-expanded","false");
+      menuToggle.textContent="☰";
+    });
+  });
+
+  /* EN-TÊTE ET BARRE DE PROGRESSION */
+
+  const header=document.getElementById("siteHeader");
+  const progress=document.getElementById("msScrollProgress");
+  const backTop=document.getElementById("backTop");
+
+  function handleScroll(){
+    const scrollTop=window.scrollY;
+    const maxScroll=document.documentElement.scrollHeight-window.innerHeight;
+    const progressValue=maxScroll>0?scrollTop/maxScroll:0;
+
+    progress.style.transform="scaleX("+progressValue+")";
+    header.classList.toggle("scrolled",scrollTop>30);
+    backTop.classList.toggle("visible",scrollTop>450);
+  }
+
+  window.addEventListener("scroll",handleScroll,{passive:true});
+  handleScroll();
+
+  backTop.addEventListener("click",function(){
+    window.scrollTo({top:0,behavior:"smooth"});
+  });
+
+  /* APPARITION DES ÉLÉMENTS AU DÉFILEMENT */
+
+  const revealItems=document.querySelectorAll(".reveal");
+
+  if("IntersectionObserver" in window){
+    const revealObserver=new IntersectionObserver(function(entries,observer){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add("show");
+          observer.unobserve(entry.target);
+        }
+      });
+    },{
+      threshold:.12,
+      rootMargin:"0px 0px -35px 0px"
+    });
+
+    revealItems.forEach(function(item,index){
+      item.style.setProperty("--delay",Math.min(index%4,3)*90+"ms");
+      revealObserver.observe(item);
+    });
+  }else{
+    revealItems.forEach(function(item){
+      item.classList.add("show");
+    });
+  }
+
+  /* FILTRES DES PRODUITS */
+
+  const filterButtons=document.querySelectorAll(".filter-btn");
+  const productCards=document.querySelectorAll(".product-card");
+  const searchInput=document.getElementById("productSearch");
+  const noProducts=document.getElementById("noProducts");
+
+  let activeFilter="tous";
+
+  function filterProducts(){
+    const search=searchInput.value.toLowerCase().trim();
+    let visibleCount=0;
+
+    productCards.forEach(function(card){
+      const category=card.dataset.category;
+      const name=card.dataset.name.toLowerCase();
+      const matchesCategory=activeFilter==="tous"||category===activeFilter;
+      const matchesSearch=name.includes(search);
+      const visible=matchesCategory&&matchesSearch;
+
+      card.style.display=visible?"":"none";
+
+      if(visible){
+        visibleCount++;
+        card.classList.add("show");
+      }
+    });
+
+    noProducts.style.display=visibleCount===0?"block":"none";
+  }
+
+  filterButtons.forEach(function(button){
+    button.addEventListener("click",function(){
+      filterButtons.forEach(function(btn){
+        btn.classList.remove("active");
+      });
+
+      button.classList.add("active");
+      activeFilter=button.dataset.filter;
+      filterProducts();
+    });
+  });
+
+  searchInput.addEventListener("input",filterProducts);
+
+  /* CLIC SUR UNE COLLECTION */
+
+  document.querySelectorAll("[data-category-link]").forEach(function(link){
+    link.addEventListener("click",function(){
+      const category=link.dataset.categoryLink;
+      const matchingButton=document.querySelector(
+        '.filter-btn[data-filter="'+category+'"]'
+      );
+
+      if(matchingButton){
+        filterButtons.forEach(function(btn){
+          btn.classList.remove("active");
+        });
+
+        matchingButton.classList.add("active");
+        activeFilter=category;
+        filterProducts();
+      }
+    });
+  });
+
+  /* EFFET 3D DES CARTES SUR ORDINATEUR */
+
+  const canTilt=window.matchMedia("(hover:hover) and (pointer:fine)").matches;
+
+  if(canTilt){
+    document.querySelectorAll(".product-card,.category").forEach(function(card){
+
+      card.addEventListener("mousemove",function(event){
+        const rect=card.getBoundingClientRect();
+        const x=event.clientX-rect.left;
+        const y=event.clientY-rect.top;
+
+        const centerX=rect.width/2;
+        const centerY=rect.height/2;
+
+        const rotateY=((x-centerX)/centerX)*4;
+        const rotateX=((centerY-y)/centerY)*4;
+
+        card.style.transform=
+          "perspective(1000px) rotateX("+rotateX+"deg) rotateY("+rotateY+"deg) translateY(-7px)";
+      });
+
+      card.addEventListener("mouseleave",function(){
+        card.style.transform="";
+      });
+    });
+  }
+
+  /* PARTICULES LUMINEUSES */
+
+  const canvas=document.getElementById("ambientCanvas");
+  const ctx=canvas.getContext("2d");
+
+  let particles=[];
+  let animationFrame;
+  let canvasWidth=0;
+  let canvasHeight=0;
+
+  const reduceMotion=window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  ).matches;
+
+  function resizeCanvas(){
+    const ratio=Math.min(window.devicePixelRatio||1,2);
+
+    canvasWidth=window.innerWidth;
+    canvasHeight=window.innerHeight;
+
+    canvas.width=canvasWidth*ratio;
+    canvas.height=canvasHeight*ratio;
+
+    ctx.setTransform(ratio,0,0,ratio,0,0);
+
+    createParticles();
+  }
+
+  function createParticles(){
+    particles=[];
+
+    const amount=Math.min(
+      42,
+      Math.max(12,Math.floor(canvasWidth/27))
+    );
+
+    for(let i=0;i<amount;i++){
+      particles.push({
+        x:Math.random()*canvasWidth,
+        y:Math.random()*canvasHeight,
+        radius:Math.random()*2+0.5,
+        speed:Math.random()*.35+.12,
+        alpha:Math.random()*.4+.12,
+        phase:Math.random()*Math.PI*2
+      });
+    }
+  }
+
+  function drawParticles(){
+    ctx.clearRect(0,0,canvasWidth,canvasHeight);
+
+    particles.forEach(function(p){
+      p.y-=p.speed;
+      p.phase+=.012;
+      p.x+=Math.sin(p.phase)*.18;
+
+      if(p.y<-10){
+        p.y=canvasHeight+10;
+        p.x=Math.random()*canvasWidth;
+      }
+
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.radius,0,Math.PI*2);
+      ctx.fillStyle="rgba(153,105,190,"+p.alpha+")";
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.radius*3,0,Math.PI*2);
+      ctx.fillStyle="rgba(190,151,221,"+(p.alpha*.12)+")";
+      ctx.fill();
+    });
+
+    if(!reduceMotion){
+      animationFrame=requestAnimationFrame(drawParticles);
+    }
+  }
+
+  resizeCanvas();
+  drawParticles();
+
+  let resizeTimer;
+
+  window.addEventListener("resize",function(){
+    clearTimeout(resizeTimer);
+    resizeTimer=setTimeout(function(){
+      cancelAnimationFrame(animationFrame);
+      resizeCanvas();
+      if(!reduceMotion)drawParticles();
+    },180);
+  });
+
+});
+</script>
+
+</body>
+</html>

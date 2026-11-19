@@ -1039,7 +1039,67 @@ if (
     });
 
   });
-}</script>
+}/* BANDEAU ANIMÉ M&S BOUTIQUE */
+
+const heroSection = document.querySelector("#accueil");
+
+if (heroSection && !document.querySelector(".ms-marquee")) {
+  const marquee = document.createElement("div");
+
+  marquee.className = "ms-marquee";
+  marquee.innerHTML = `
+    <div class="ms-marquee-track">
+      <span>✦ M&S BOUTIQUE</span>
+      <span>LA MODE QUI RÉVÈLE TA PERSONNALITÉ</span>
+      <span>✦ ÉLÉGANCE & STYLE</span>
+      <span>✦ M&S BOUTIQUE</span>
+      <span>LA MODE QUI RÉVÈLE TA PERSONNALITÉ</span>
+      <span>✦ ÉLÉGANCE & STYLE</span>
+    </div>
+  `;
+
+  const style = document.createElement("style");
+
+  style.textContent = `
+    .ms-marquee {
+      overflow: hidden;
+      width: 100%;
+      background: linear-gradient(90deg, #6d28d9, #9333ea, #6d28d9);
+      color: white;
+      padding: 17px 0;
+      margin: 25px 0;
+      transform: skewY(-1deg);
+      box-shadow: 0 10px 25px rgba(109,40,217,.18);
+    }
+
+    .ms-marquee-track {
+      display: flex;
+      width: max-content;
+      gap: 45px;
+      white-space: nowrap;
+      animation: msMarqueeMove 22s linear infinite;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      font-size: 13px;
+    }
+
+    .ms-marquee:hover .ms-marquee-track {
+      animation-play-state: paused;
+    }
+
+    @keyframes msMarqueeMove {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ms-marquee-track { animation: none; }
+    }
+  `;
+
+  document.head.appendChild(style);
+  heroSection.insertAdjacentElement("afterend", marquee);
+          }</script>
 
 </body>
 </html>

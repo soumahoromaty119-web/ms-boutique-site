@@ -1322,7 +1322,32 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
   `;
 
   document.head.appendChild(animationStyle);
-  }</script>
+  }
+/* EFFET 3D DE LA BANNIERE D'ACCUEIL */
+
+const hero3D = document.querySelector(".hero");
+
+if (
+  hero3D &&
+  window.matchMedia("(hover: hover) and (pointer: fine)").matches &&
+  !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+) {
+  hero3D.addEventListener("pointermove", event => {
+    const rect = hero3D.getBoundingClientRect();
+
+    const x = (event.clientX - rect.left) / rect.width - 0.5;
+    const y = (event.clientY - rect.top) / rect.height - 0.5;
+
+    hero3D.style.setProperty("--hero-x", `${x * 8}px`);
+    hero3D.style.setProperty("--hero-y", `${y * 8}px`);
+  });
+
+  hero3D.addEventListener("pointerleave", () => {
+    hero3D.style.setProperty("--hero-x", "0px");
+    hero3D.style.setProperty("--hero-y", "0px");
+  });
+}
+</script>
 
 </body>
 </html>

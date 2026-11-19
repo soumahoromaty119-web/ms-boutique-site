@@ -2313,5 +2313,168 @@ document.addEventListener("DOMContentLoaded",function(){
          </script>
   
 
+
+<style>
+/* M&S — CORRECTION DU POSITIONNEMENT DES FENÊTRES */
+.ms-layer {
+  box-sizing: border-box !important;
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  height: 100dvh !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  padding:
+    max(12px, env(safe-area-inset-top))
+    12px
+    max(12px, env(safe-area-inset-bottom)) !important;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.ms-panel {
+  box-sizing: border-box !important;
+  flex: 0 0 auto !important;
+  width: min(100%, 560px) !important;
+  max-height: calc(
+    100dvh - 24px -
+    env(safe-area-inset-top) -
+    env(safe-area-inset-bottom)
+  ) !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain !important;
+  -webkit-overflow-scrolling: touch !important;
+  margin-top: auto !important;
+  margin-bottom: auto !important;
+  scroll-behavior: smooth;
+  touch-action: pan-y;
+}
+
+/* Animation plus raffinée */
+.ms-layer.ms-visible {
+  animation: msBackdropIn .32s ease-out both !important;
+}
+
+.ms-panel {
+  animation: msPanelIn .42s cubic-bezier(.16,1,.3,1) both !important;
+  transform-origin: center center;
+}
+
+@keyframes msBackdropIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes msPanelIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(.975);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 480px) {
+  .ms-panel {
+    width: 100% !important;
+    border-radius: 20px !important;
+    padding: 21px 17px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ms-layer.ms-visible,
+  .ms-panel {
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+</style>
+
+<script>
+/* M&S — VERROUILLAGE DU DÉFILEMENT ARRIÈRE-PLAN */
+(function () {
+  "use strict";
+
+  const body = document.body;
+  const layers = [
+    document.getElementById("msProductLayer"),
+    document.getElementById("msCartLayer")
+  ].filter(Boolean);
+
+  if (!layers.length) return;
+
+  let locked = false;
+  let savedScrollY = 0;
+  let previousStyles = {};
+
+  function lockPage() {
+    if (locked) return;
+
+    locked = true;
+    savedScrollY = window.scrollY || window.pageYOffset;
+
+    previousStyles = {
+      position: body.style.position,
+      top: body.style.top,
+      left: body.style.left,
+      right: body.style.right,
+      width: body.style.width,
+      overflow: body.style.overflow
+    };
+
+    body.style.position = "fixed";
+    body.style.top = "-" + savedScrollY + "px";
+    body.style.left = "0";
+    body.style.right = "0";
+    body.style.width = "100%";
+    body.style.overflow = "hidden";
+  }
+
+  function unlockPage() {
+    if (!locked) return;
+
+    locked = false;
+
+    body.style.position = previousStyles.position;
+    body.style.top = previousStyles.top;
+    body.style.left = previousStyles.left;
+    body.style.right = previousStyles.right;
+    body.style.width = previousStyles.width;
+    body.style.overflow = previousStyles.overflow;
+
+    window.scrollTo(0, savedScrollY);
+  }
+
+  function synchronize() {
+    const isOpen = layers.some(layer =>
+      layer.classList.contains("ms-visible")
+    );
+
+    if (isOpen) {
+      lockPage();
+    } else {
+      unlockPage();
+    }
+  }
+
+  const observer = new MutationObserver(synchronize);
+
+  layers.forEach(layer => {
+    observer.observe(layer, {
+      attributes: true,
+      attributeFilter: ["class"]
+    });
+  });
+
+  synchronize();
+})();
+</script>
 </body>
 </html>

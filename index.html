@@ -13,38 +13,47 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
 
 <style>
-:root {
+:root{
   --purple:#633b91;
   --deep:#30243b;
   --lavender:#f3edf8;
   --white:#fff;
   --muted:#817889;
+  --border:#eee8f3;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:90px}
 body{font-family:'DM Sans',sans-serif;color:var(--deep);background:white}
 a{text-decoration:none;color:inherit}
+button,input{font:inherit}
+button{cursor:pointer}
 
 .topbar{
   background:var(--deep);color:white;text-align:center;
-  padding:9px;font-size:11px;letter-spacing:1px
+  padding:10px;font-size:10px;letter-spacing:1.2px
 }
 header{
-  background:white;padding:18px 7%;display:flex;
+  background:white;padding:17px 7%;display:flex;
   align-items:center;justify-content:space-between;
-  border-bottom:1px solid #f0ebf3;position:sticky;top:0;z-index:20
+  border-bottom:1px solid #f0ebf3;
+  position:sticky;top:0;z-index:100
 }
 .logo{font-size:23px;font-weight:700;letter-spacing:1px;color:var(--purple)}
 .logo span{color:var(--deep)}
-nav{display:flex;align-items:center;gap:27px}
-nav a{font-size:13px;font-weight:600;transition:.2s}
+nav{display:flex;align-items:center;gap:25px}
+nav a{font-size:12px;font-weight:600;transition:.2s}
 nav a:hover{color:var(--purple)}
-.header-actions{display:flex;gap:17px;font-size:19px}
+.menu-toggle{
+  display:none;background:none;border:0;color:var(--deep);
+  font-size:25px;padding:4px
+}
 
 .hero{
-  margin:25px auto;width:92%;min-height:490px;border-radius:5px;
-  overflow:hidden;display:flex;align-items:center;
-  background:linear-gradient(90deg,rgba(30,20,38,.72),rgba(30,20,38,.08)),
+  margin:24px auto;width:92%;min-height:490px;
+  border-radius:5px;overflow:hidden;display:flex;
+  align-items:center;
+  background:
+  linear-gradient(90deg,rgba(30,20,38,.72),rgba(30,20,38,.08)),
   url('https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=1800&q=85') center 35%/cover;
   color:white
 }
@@ -54,35 +63,76 @@ h1{font-family:'Playfair Display',serif;font-size:clamp(43px,6vw,72px);line-heig
 .hero p{max-width:420px;line-height:1.8;font-size:14px;margin-bottom:28px}
 .button{
   display:inline-block;padding:15px 27px;background:var(--purple);
-  color:white;font-size:12px;font-weight:700;letter-spacing:1px;transition:.25s
+  color:white;font-size:11px;font-weight:700;letter-spacing:1px;
+  border:0;transition:.25s
 }
 .button:hover{background:#4d2d72;transform:translateY(-2px)}
 
 .section{padding:65px 7%}
 .section-heading{text-align:center;margin-bottom:35px}
-.section-heading small{color:var(--purple);letter-spacing:3px;font-weight:700;font-size:10px;text-transform:uppercase}
-.section-heading h2{font-family:'Playfair Display',serif;font-size:35px;margin:12px 0}
+.section-heading small{
+  color:var(--purple);letter-spacing:3px;font-weight:700;
+  font-size:10px;text-transform:uppercase
+}
+.section-heading h2{
+  font-family:'Playfair Display',serif;font-size:35px;margin:12px 0
+}
 .section-heading p{color:var(--muted);font-size:13px}
 
 .categories{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.category{position:relative;height:310px;overflow:hidden;background:var(--lavender)}
-.category img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
-.category:hover img{transform:scale(1.06)}
+.category{
+  position:relative;height:300px;overflow:hidden;
+  background:var(--lavender);cursor:pointer
+}
+.category img{
+  width:100%;height:100%;object-fit:cover;
+  transition:transform .6s
+}
+.category:hover img{transform:scale(1.07)}
 .category-label{
-  position:absolute;bottom:0;left:0;right:0;padding:45px 20px 20px;
-  color:white;background:linear-gradient(transparent,rgba(25,15,35,.7))
+  position:absolute;bottom:0;left:0;right:0;
+  padding:45px 20px 20px;color:white;
+  background:linear-gradient(transparent,rgba(25,15,35,.75))
 }
 .category-label h3{font-family:'Playfair Display',serif;font-size:25px}
 .category-label span{font-size:11px;margin-top:5px;display:inline-block}
 
-/* CATALOGUE PRODUITS */
 .products-section{background:#fcfaff}
+.catalog-tools{
+  max-width:850px;margin:0 auto 30px;
+  display:flex;flex-direction:column;gap:18px
+}
+.search-box{position:relative;width:100%}
+.search-box input{
+  width:100%;padding:15px 18px 15px 45px;
+  border:1px solid var(--border);background:white;
+  outline:none;font-size:13px;border-radius:3px
+}
+.search-box input:focus{border-color:var(--purple)}
+.search-icon{
+  position:absolute;left:16px;top:50%;
+  transform:translateY(-50%);font-size:18px;color:var(--muted)
+}
+.filters{
+  display:flex;justify-content:center;gap:10px;
+  flex-wrap:wrap
+}
+.filter-btn{
+  border:1px solid #e7deef;background:white;
+  color:var(--deep);padding:10px 17px;
+  font-size:11px;transition:.25s
+}
+.filter-btn:hover,.filter-btn.active{
+  background:var(--purple);color:white;border-color:var(--purple)
+}
+
 .products-grid{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:22px
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:22px
 }
 .product-card{
-  background:white;border:1px solid #eee8f3;overflow:hidden;
-  transition:transform .3s,box-shadow .3s
+  background:white;border:1px solid var(--border);
+  overflow:hidden;transition:transform .3s,box-shadow .3s
 }
 .product-card:hover{
   transform:translateY(-5px);
@@ -96,36 +146,49 @@ h1{font-family:'Playfair Display',serif;font-size:clamp(43px,6vw,72px);line-heig
 }
 .product-image span{display:block;font-size:35px;margin-bottom:10px}
 .product-info{padding:20px}
+.product-category{
+  color:var(--purple);font-size:9px;
+  letter-spacing:1.5px;text-transform:uppercase;
+  font-weight:700
+}
 .product-info h3{
-  font-family:'Playfair Display',serif;font-size:21px;margin-bottom:10px
+  font-family:'Playfair Display',serif;
+  font-size:21px;margin:9px 0 12px
 }
 .product-description{
-  color:var(--muted);font-size:12px;line-height:1.7;margin-bottom:17px
+  color:var(--muted);font-size:12px;
+  line-height:1.8;margin-bottom:17px
 }
 .price-label{
-  color:var(--purple);font-size:10px;font-weight:700;
-  text-transform:uppercase;letter-spacing:1px;margin-bottom:8px
+  color:var(--purple);font-size:10px;
+  font-weight:700;text-transform:uppercase;
+  letter-spacing:1px;margin-bottom:8px
 }
 .price-line{
-  display:flex;justify-content:space-between;gap:10px;
-  font-size:13px;padding:7px 0;border-bottom:1px solid #f1edf4
+  display:flex;justify-content:space-between;gap:8px;
+  font-size:12px;padding:8px 0;
+  border-bottom:1px solid #f1edf4
 }
-.price-line strong{color:var(--deep)}
-.product-detail{margin-top:16px;font-size:12px;line-height:1.9}
+.price-line strong{color:var(--deep);white-space:nowrap}
+.product-detail{margin-top:15px;font-size:11px;line-height:2}
 .product-detail strong{color:var(--purple)}
 .product-status{
-  display:inline-block;margin-top:14px;background:var(--lavender);
-  color:var(--purple);padding:7px 12px;font-size:10px;
-  font-weight:700;letter-spacing:.5px
+  display:inline-block;margin-top:14px;
+  background:var(--lavender);color:var(--purple);
+  padding:8px 13px;font-size:10px;font-weight:700
+}
+.empty-message{
+  display:none;text-align:center;color:var(--muted);
+  padding:35px;font-size:13px;grid-column:1/-1
 }
 .product-note{
-  text-align:center;color:var(--muted);font-size:12px;
-  line-height:1.7;margin-top:30px
+  text-align:center;color:var(--muted);
+  font-size:11px;line-height:1.8;margin-top:28px
 }
 
 .promo{
-  margin:15px 7% 65px;padding:55px 25px;text-align:center;
-  background:var(--lavender)
+  margin:15px 7% 65px;padding:55px 25px;
+  text-align:center;background:var(--lavender)
 }
 .promo small{color:var(--purple);font-weight:700;letter-spacing:3px;font-size:10px}
 .promo h2{font-family:'Playfair Display',serif;font-size:34px;margin:14px 0}
@@ -133,11 +196,14 @@ h1{font-family:'Playfair Display',serif;font-size:clamp(43px,6vw,72px);line-heig
 
 .about{text-align:center;padding:60px 10%;border-top:1px solid #f0ebf3}
 .about h2{font-family:'Playfair Display',serif;font-size:32px;margin-bottom:18px}
-.about p{max-width:650px;margin:auto;color:var(--muted);line-height:1.9;font-size:14px}
-
+.about p{
+  max-width:650px;margin:auto;color:var(--muted);
+  line-height:1.9;font-size:14px
+}
 .benefits{
-  background:#faf8fc;padding:30px 7%;display:grid;
-  grid-template-columns:repeat(3,1fr);gap:20px;text-align:center
+  background:#faf8fc;padding:30px 7%;
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:20px;text-align:center
 }
 .benefit strong{display:block;font-size:13px;margin-bottom:7px}
 .benefit span{color:var(--muted);font-size:11px}
@@ -147,32 +213,60 @@ footer .logo{color:#d9c2f0}
 footer .logo span{color:white}
 footer p{margin-top:13px;font-size:12px;color:#d4cbdc}
 
+.back-top{
+  position:fixed;right:20px;bottom:20px;
+  width:43px;height:43px;border:0;border-radius:50%;
+  background:var(--purple);color:white;font-size:20px;
+  box-shadow:0 5px 18px rgba(48,36,59,.2);
+  opacity:0;visibility:hidden;transform:translateY(10px);
+  transition:.3s;z-index:90
+}
+.back-top.visible{opacity:1;visibility:visible;transform:translateY(0)}
+
+.reveal{
+  opacity:0;transform:translateY(25px);
+  transition:opacity .7s ease,transform .7s ease
+}
+.reveal.show{opacity:1;transform:translateY(0)}
+
 @media(max-width:700px){
-  header{padding:16px 5%}
+  header{padding:15px 5%}
   .logo{font-size:19px}
-  nav{gap:13px}
-  nav a{font-size:10px}
-  .header-actions{display:none}
+  .menu-toggle{display:block}
+  nav{
+    display:none;position:absolute;top:100%;left:0;right:0;
+    background:white;padding:20px 5%;
+    flex-direction:column;align-items:flex-start;
+    gap:20px;border-bottom:1px solid var(--border);
+    box-shadow:0 10px 20px rgba(48,36,59,.06)
+  }
+  nav.open{display:flex}
+  nav a{font-size:13px}
   .hero{min-height:430px;width:94%;background-position:58% center}
   .hero-content{padding:35px 23px}
   h1{font-size:45px}
   .section{padding:48px 5%}
   .categories{grid-template-columns:repeat(2,1fr);gap:12px}
-  .category{height:230px}
+  .category{height:220px}
   .category-label h3{font-size:20px}
   .section-heading h2{font-size:29px}
   .products-grid{grid-template-columns:1fr;gap:20px}
   .product-image{height:360px}
   .promo{margin:5px 5% 45px}
   .benefits{grid-template-columns:1fr;gap:23px}
+  .filters{justify-content:flex-start;overflow-x:auto;flex-wrap:nowrap;padding-bottom:5px}
+  .filter-btn{white-space:nowrap}
 }
 @media(min-width:701px) and (max-width:1000px){
   .products-grid{grid-template-columns:repeat(2,1fr)}
 }
-@media(max-width:360px){
-  nav{gap:8px}
-  nav a{font-size:9px}
-  .category{height:190px}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    scroll-behavior:auto!important;
+    animation-duration:.01ms!important;
+    transition-duration:.01ms!important
+  }
+  .reveal{opacity:1;transform:none}
 }
 </style>
 </head>
@@ -185,18 +279,17 @@ BIENVENUE CHEZ M&S BOUTIQUE — LA MODE QUI RÉVÈLE TA PERSONNALITÉ
 
 <header>
 <a href="#accueil" class="logo">M&S <span>BOUTIQUE</span></a>
-<nav>
+<button class="menu-toggle" id="menuToggle" aria-label="Ouvrir le menu" aria-expanded="false">☰</button>
+<nav id="mainNav">
 <a href="#accueil">Accueil</a>
 <a href="#collections">Collections</a>
 <a href="#produits">Nos produits</a>
 <a href="#apropos">Notre univers</a>
 </nav>
-<div class="header-actions">
-<span>⌕</span><span>♡</span><span>♧</span>
-</div>
 </header>
 
 <main>
+
 <section class="hero" id="accueil">
 <div class="hero-content">
 <div class="eyebrow">L'élégance au quotidien</div>
@@ -210,54 +303,77 @@ pensées pour accompagner chaque personnalité et chaque occasion.
 </section>
 
 <section class="section" id="collections">
-<div class="section-heading">
+<div class="section-heading reveal">
 <small>Explorez notre univers</small>
 <h2>Nos collections</h2>
 <p>Trouvez les pièces qui racontent votre style.</p>
 </div>
 
 <div class="categories">
-<a class="category" href="#produits">
+
+<a class="category reveal" href="#produits" data-category-link="robes">
 <img src="https://images.unsplash.com/photo-1539008835657-9e8e9680c956?auto=format&fit=crop&w=800&q=80" alt="Collection robes">
 <div class="category-label"><h3>Robes</h3><span>Découvrir la collection →</span></div>
 </a>
-<a class="category" href="#produits">
+
+<a class="category reveal" href="#produits" data-category-link="jupes">
 <img src="https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?auto=format&fit=crop&w=800&q=80" alt="Collection jupes">
 <div class="category-label"><h3>Jupes</h3><span>Découvrir la collection →</span></div>
 </a>
-<a class="category" href="#produits">
+
+<a class="category reveal" href="#produits" data-category-link="hauts">
 <img src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=800&q=80" alt="Collection hauts">
 <div class="category-label"><h3>Hauts</h3><span>Découvrir la collection →</span></div>
 </a>
-<a class="category" href="#produits">
+
+<a class="category reveal" href="#produits" data-category-link="ensembles">
 <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=800&q=80" alt="Collection ensembles">
 <div class="category-label"><h3>Ensembles</h3><span>Découvrir la collection →</span></div>
 </a>
-<a class="category" href="#produits">
+
+<a class="category reveal" href="#produits" data-category-link="bijoux">
 <img src="https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=800&q=80" alt="Bijoux">
 <div class="category-label"><h3>Bijoux</h3><span>Découvrir la collection →</span></div>
 </a>
-<a class="category" href="#produits">
+
+<a class="category reveal" href="#produits" data-category-link="accessoires">
 <img src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=800&q=80" alt="Accessoires">
 <div class="category-label"><h3>Accessoires</h3><span>Découvrir la collection →</span></div>
 </a>
+
 </div>
 </section>
 
 <section class="section products-section" id="produits">
-<div class="section-heading">
+<div class="section-heading reveal">
 <small>La sélection M&S</small>
 <h2>Nos nouveautés</h2>
 <p>Découvrez nos premières pièces disponibles.</p>
 </div>
 
-<div class="products-grid">
+<div class="catalog-tools reveal">
+<div class="search-box">
+<span class="search-icon">⌕</span>
+<input type="search" id="productSearch" placeholder="Rechercher un vêtement, une couleur...">
+</div>
 
-<article class="product-card">
+<div class="filters">
+<button class="filter-btn active" data-filter="tout">Tout voir</button>
+<button class="filter-btn" data-filter="robes">Robes</button>
+<button class="filter-btn" data-filter="ensembles">Ensembles</button>
+<button class="filter-btn" data-filter="jupes">Jupes</button>
+<button class="filter-btn" data-filter="hauts">Hauts</button>
+</div>
+</div>
+
+<div class="products-grid" id="productsGrid">
+
+<article class="product-card reveal" data-category="robes" data-search="robe longue rose volants halter noir beige rouge blanc vert bleu rose">
 <div class="product-image">
 <div><span>♡</span>Photo du produit bientôt disponible</div>
 </div>
 <div class="product-info">
+<div class="product-category">Collection robes</div>
 <h3>Robe longue rose à volants</h3>
 <p class="product-description">
 Une élégante robe longue rose à décolleté halter, sublimée par une cascade de volants superposés. Son tombé fluide et aérien apporte une touche de féminité, de glamour et de raffinement.
@@ -273,11 +389,12 @@ Une élégante robe longue rose à décolleté halter, sublimée par une cascade
 </div>
 </article>
 
-<article class="product-card">
+<article class="product-card reveal" data-category="ensembles" data-search="ensemble rouge uni robe courte v manches bouffantes noir rose violet marron blanc vert">
 <div class="product-image">
 <div><span>♡</span>Photo du produit bientôt disponible</div>
 </div>
 <div class="product-info">
+<div class="product-category">Collection ensembles</div>
 <h3>Ensemble rouge uni</h3>
 <p class="product-description">
 Robe courte à décolleté en V, manches longues bouffantes, taille entièrement smockée et jupe bouffante pour une allure féminine et élégante.
@@ -293,11 +410,12 @@ Robe courte à décolleté en V, manches longues bouffantes, taille entièrement
 </div>
 </article>
 
-<article class="product-card">
+<article class="product-card reveal" data-category="ensembles" data-search="ensemble blanc rouge carreaux haut épaules dénudées jupe unique">
 <div class="product-image">
 <div><span>♡</span>Photo du produit bientôt disponible</div>
 </div>
 <div class="product-info">
+<div class="product-category">Collection ensembles</div>
 <h3>Ensemble blanc et rouge à carreaux</h3>
 <p class="product-description">
 Haut blanc épaules dénudées, ajusté et froncé, associé à une jupe courte bouffante à carreaux rouges et blancs. Un look chic, tendance et décontracté.
@@ -313,6 +431,10 @@ Haut blanc épaules dénudées, ajusté et froncé, associé à une jupe courte 
 </div>
 </article>
 
+<div class="empty-message" id="emptyMessage">
+Aucun produit ne correspond à votre recherche.
+</div>
+
 </div>
 
 <p class="product-note">
@@ -320,14 +442,14 @@ Les prix varient selon la taille choisie. Les photos des articles seront ajouté
 </p>
 </section>
 
-<section class="promo">
+<section class="promo reveal">
 <small>L'UNIVERS M&S</small>
 <h2>Votre style, votre signature.</h2>
 <p>Explorez nos collections et trouvez votre prochaine pièce coup de cœur.</p>
 <a href="#produits" class="button">EXPLORER</a>
 </section>
 
-<section class="about" id="apropos">
+<section class="about reveal" id="apropos">
 <h2>Bienvenue dans notre univers</h2>
 <p>
 M&S BOUTIQUE est née d'une inspiration simple :
@@ -339,19 +461,20 @@ un univers de découverte et de style.
 </section>
 
 <div class="benefits">
-<div class="benefit">
+<div class="benefit reveal">
 <strong>Livraison en Côte d'Ivoire</strong>
 <span>Partout dans le pays</span>
 </div>
-<div class="benefit">
+<div class="benefit reveal">
 <strong>Paiement sécurisé</strong>
 <span>Des solutions adaptées</span>
 </div>
-<div class="benefit">
+<div class="benefit reveal">
 <strong>Un service à votre écoute</strong>
 <span>Nous sommes là pour vous</span>
 </div>
 </div>
+
 </main>
 
 <footer>
@@ -359,6 +482,100 @@ un univers de découverte et de style.
 <p>La mode qui révèle ta personnalité.</p>
 <p>© 2026 M&S BOUTIQUE — Tous droits réservés.</p>
 </footer>
+
+<button class="back-top" id="backTop" aria-label="Retour en haut">↑</button>
+
+<script>
+const menuToggle=document.getElementById('menuToggle');
+const mainNav=document.getElementById('mainNav');
+
+menuToggle.addEventListener('click',()=>{
+  const opened=mainNav.classList.toggle('open');
+  menuToggle.setAttribute('aria-expanded',opened);
+  menuToggle.textContent=opened?'×':'☰';
+});
+
+mainNav.querySelectorAll('a').forEach(link=>{
+  link.addEventListener('click',()=>{
+    mainNav.classList.remove('open');
+    menuToggle.setAttribute('aria-expanded','false');
+    menuToggle.textContent='☰';
+  });
+});
+
+const searchInput=document.getElementById('productSearch');
+const filterButtons=document.querySelectorAll('.filter-btn');
+const productCards=document.querySelectorAll('.product-card');
+const emptyMessage=document.getElementById('emptyMessage');
+
+let activeFilter='tout';
+
+function filterProducts(){
+  const search=searchInput.value.toLowerCase().trim();
+  let visible=0;
+
+  productCards.forEach(card=>{
+    const category=card.dataset.category;
+    const text=card.dataset.search.toLowerCase();
+    const matchesCategory=activeFilter==='tout'||category===activeFilter;
+    const matchesSearch=text.includes(search);
+    const show=matchesCategory&&matchesSearch;
+
+    card.style.display=show?'block':'none';
+    if(show)visible++;
+  });
+
+  emptyMessage.style.display=visible===0?'block':'none';
+}
+
+filterButtons.forEach(button=>{
+  button.addEventListener('click',()=>{
+    filterButtons.forEach(item=>item.classList.remove('active'));
+    button.classList.add('active');
+    activeFilter=button.dataset.filter;
+    filterProducts();
+  });
+});
+
+searchInput.addEventListener('input',filterProducts);
+
+document.querySelectorAll('[data-category-link]').forEach(link=>{
+  link.addEventListener('click',()=>{
+    const category=link.dataset.categoryLink;
+    const button=document.querySelector('[data-filter="'+category+'"]');
+
+    if(button){
+      filterButtons.forEach(item=>item.classList.remove('active'));
+      button.classList.add('active');
+      activeFilter=category;
+      filterProducts();
+    }
+  });
+});
+
+const backTop=document.getElementById('backTop');
+
+window.addEventListener('scroll',()=>{
+  backTop.classList.toggle('visible',window.scrollY>450);
+});
+
+backTop.addEventListener('click',()=>{
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+
+const observer=new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.classList.add('show');
+      observer.unobserve(entry.target);
+    }
+  });
+},{threshold:.12});
+
+document.querySelectorAll('.reveal').forEach(element=>{
+  observer.observe(element);
+});
+</script>
 
 </body>
 </html>

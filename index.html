@@ -656,7 +656,69 @@ body::after{
   body::after{
     animation:none;
   }
-  }</style>
+  }/* ANIMATIONS PREMIUM DES BOUTONS */
+
+button,
+.btn,
+.product-card button,
+.filter-btn {
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform .35s ease,
+    box-shadow .35s ease,
+    background .35s ease;
+}
+
+button::after,
+.btn::after,
+.product-card button::after,
+.filter-btn::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -100%;
+  width: 55%;
+  height: 200%;
+  background: linear-gradient(
+    110deg,
+    transparent,
+    rgba(255,255,255,.45),
+    transparent
+  );
+  transform: rotate(20deg);
+  transition: left .7s ease;
+  pointer-events: none;
+}
+
+button:hover::after,
+.btn:hover::after,
+.product-card button:hover::after,
+.filter-btn:hover::after {
+  left: 150%;
+}
+
+button:hover,
+.btn:hover,
+.product-card button:hover,
+.filter-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(109,40,217,.2);
+}
+
+button:active,
+.btn:active {
+  transform: scale(.96);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button,
+  .btn,
+  .product-card button,
+  .filter-btn {
+    transition: none;
+  }
+                              }</style>
 </head>
 
 <body>
@@ -1099,7 +1161,51 @@ if (heroSection && !document.querySelector(".ms-marquee")) {
 
   document.head.appendChild(style);
   heroSection.insertAdjacentElement("afterend", marquee);
-          }</script>
+          }/* ANIMATIONS D'APPARITION EN CASCADE */
+
+if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  const animatedItems = document.querySelectorAll(
+    ".category, .product-card, .benefit, .section-title, .about-content"
+  );
+
+  animatedItems.forEach((item, index) => {
+    item.style.transition =
+      "opacity .8s ease, transform .8s cubic-bezier(.2,.8,.2,1)";
+    item.style.transitionDelay = `${(index % 4) * 100}ms`;
+  });
+
+  const animationObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("scroll-visible");
+        animationObserver.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.12
+  });
+
+  animatedItems.forEach(item => {
+    item.classList.add("scroll-animate");
+    animationObserver.observe(item);
+  });
+
+  const animationStyle = document.createElement("style");
+
+  animationStyle.textContent = `
+    .scroll-animate {
+      opacity: 0;
+      transform: translateY(35px) scale(.97);
+    }
+
+    .scroll-animate.scroll-visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  `;
+
+  document.head.appendChild(animationStyle);
+  }</script>
 
 </body>
 </html>

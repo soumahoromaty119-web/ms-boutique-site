@@ -785,6 +785,28 @@ button:active,
     filter: none;
   }
 }
+
+/* HALO LUMINEUX CINEMATIQUE */
+.hero::after {
+  background-size: 200% 100%;
+  background-position: 0% 50%;
+  animation: heroLightSweep 9s ease-in-out infinite alternate;
+}
+
+@keyframes heroLightSweep {
+  from {
+    background-position: 0% 50%;
+  }
+  to {
+    background-position: 100% 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero::after {
+    animation: none;
+  }
+    }
 </style>
 </head>
 

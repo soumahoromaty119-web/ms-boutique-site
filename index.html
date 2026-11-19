@@ -807,6 +807,21 @@ button:active,
     animation: none;
   }
     }
+
+/* PROFONDEUR 3D DE LA BANNIERE */
+.hero::before {
+  background-position:
+    calc(50% + var(--hero-x, 0px))
+    calc(35% + var(--hero-y, 0px));
+  transition: background-position .18s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero::before {
+    background-position: center 35%;
+    transition: none;
+  }
+}
 </style>
 </head>
 

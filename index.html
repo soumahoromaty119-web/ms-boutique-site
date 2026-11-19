@@ -822,7 +822,43 @@ button:active,
     transition: none;
   }
 }
-</style>
+
+/* BADGES DISPONIBILITE ANIMES */
+.product-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.product-status::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #35b879;
+  box-shadow: 0 0 0 0 rgba(53,184,121,.45);
+  animation: availablePulse 2s infinite;
+}
+
+@keyframes availablePulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(53,184,121,.45);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(53,184,121,0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(53,184,121,0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-status::before {
+    animation: none;
+  }
+    }
+    </style>
 </head>
 
 <body>

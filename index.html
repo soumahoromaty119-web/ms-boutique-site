@@ -3470,14 +3470,21 @@ document.addEventListener("DOMContentLoaded",function(){
       "https://wa.me/2250171123891?text=" +
       encodeURIComponent(message);
 
-        const whatsappWindow = window.open(whatsappUrl, "_blank");
+            msOrderLaunchLocked = true;
+    clicked.disabled = true;
+    clicked.textContent = "Ouverture de WhatsApp...";
+
+    const whatsappWindow = window.open(whatsappUrl, "_blank");
 
     if (whatsappWindow) {
       whatsappWindow.opener = null;
       showOrderReady();
     } else {
+      msOrderLaunchLocked = false;
+      clicked.disabled = false;
+      clicked.textContent = "Préparer ma commande";
       window.location.href = whatsappUrl;
-      }
+    }
 
   }, true);
 })();

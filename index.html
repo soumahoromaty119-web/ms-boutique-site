@@ -1785,6 +1785,79 @@ document.addEventListener("DOMContentLoaded",function(){
 });
 </script>
 <script>
+/* M&S — VRAIES PHOTOS + NOUVEL ARTICLE (à placer AVANT le script du panier) */
+(function(){
+  "use strict";
+
+  var DESCRIPTIONS={
+    "robe longue rose à volants":"Une élégante robe longue rose à décolleté halter, sublimée par une cascade de volants superposés. Son tombé fluide et aérien apporte une touche de féminité, de glamour et de raffinement. 🖤",
+    "ensemble rouge uni":"Robe courte à décolleté en V, manches longues bouffantes, taille entièrement smockée et jupe bouffante pour une allure féminine et élégante. ❤️",
+    "ensemble blanc et rouge à carreaux":"Haut blanc épaules dénudées, ajusté et froncé, associé à une jupe courte bouffante à carreaux rouges et blancs. Un look chic, tendance et décontracté. 🤍❤️",
+    "ensemble épaule dénudée smocké":"Haut court à encolure asymétrique et manches amples évasées, taille élastiquée, associé à une jupe courte entièrement smockée qui épouse la silhouette. Une allure féminine, moderne et affirmée. 💗"
+  };
+
+  var PHOTOS={
+    "robe longue rose à volants":"robe-rose.jpg",
+    "ensemble rouge uni":"ensemble-rouge.jpg",
+    "ensemble blanc et rouge à carreaux":"ensemble-carreaux.jpg",
+    "ensemble épaule dénudée smocké":"ensemble-smocke-fuchsia.jpg"
+  };
+
+  var grid=document.getElementById("productsGrid");
+  if(!grid) return;
+
+  /* 1. Nouvel article, placé en premier */
+  var card=document.createElement("article");
+  card.className="product-card reveal";
+  card.setAttribute("data-category","ensembles");
+  card.setAttribute("data-name","ensemble épaule dénudée smocké");
+  card.innerHTML=
+    '<div class="product-image">'+
+      '<img src="ensemble-smocke-fuchsia.jpg" alt="Ensemble épaule dénudée smocké" loading="lazy">'+
+      '<span class="product-status">Disponible</span>'+
+    '</div>'+
+    '<div class="product-info">'+
+      '<h3>Ensemble épaule dénudée smocké</h3>'+
+      '<p></p>'+
+      '<div class="product-price">XXS – L : 7 000 FCFA<br>XL – XXXL : 8 500 FCFA</div>'+
+      '<div class="product-colors" aria-label="Couleurs disponibles">'+
+        '<span style="background:#c62836" title="Rouge"></span>'+
+        '<span style="background:#171717" title="Noir"></span>'+
+        '<span style="background:#e99ab8" title="Rose"></span>'+
+        '<span style="background:#7543a0" title="Violet"></span>'+
+        '<span style="background:#805438" title="Marron"></span>'+
+        '<span style="background:#fff" title="Blanc"></span>'+
+        '<span style="background:#28734c" title="Vert"></span>'+
+      '</div>'+
+    '</div>';
+  grid.insertBefore(card,grid.firstChild);
+
+  /* 2. Vraies photos et descriptions sur les cartes */
+  grid.querySelectorAll(".product-card").forEach(function(c){
+    var key=(c.getAttribute("data-name")||"").toLowerCase();
+    var img=c.querySelector(".product-image img");
+    var p=c.querySelector(".product-info p");
+    if(img&&PHOTOS[key]){ img.removeAttribute("srcset"); img.src=PHOTOS[key]; }
+    if(p&&DESCRIPTIONS[key]) p.textContent=DESCRIPTIONS[key];
+  });
+
+  /* 3. Photos des collections */
+  var COLLECTIONS={robes:"robe-rose.jpg",ensembles:"ensemble-smocke-fuchsia.jpg"};
+  Object.keys(COLLECTIONS).forEach(function(k){
+    var img=document.querySelector('[data-category-link="'+k+'"] img');
+    if(img){ img.removeAttribute("srcset"); img.src=COLLECTIONS[k]; }
+  });
+
+  /* 4. Descriptions complètes dans les fiches produits */
+  new MutationObserver(function(){
+    var t=document.getElementById("msProductTitle");
+    var d=document.getElementById("msProductDescription");
+    if(!t||!d) return;
+    var txt=DESCRIPTIONS[t.textContent.trim().toLowerCase()];
+    if(txt&&d.textContent!==txt) d.textContent=txt;
+  }).observe(document.body,{childList:true,subtree:true,characterData:true});
+})();
+</script><script>
 /* ==========================================================
    M&S BOUTIQUE — FICHES PRODUITS + PANIER
    Intégration autonome : un seul bloc à coller avant </body>
@@ -1792,7 +1865,21 @@ document.addEventListener("DOMContentLoaded",function(){
 (function () {
   "use strict";
 
-  const catalog = [
+  const catalog = [    {
+      id: "ensemble-epaule-smocke",
+      name: "Ensemble épaule dénudée smocké",
+      description: "Haut court à encolure asymétrique et manches amples évasées, associé à une jupe courte entièrement smockée.",
+      prices: { small: 7000, large: 8500 },
+      colors: [
+        { name: "Rouge", value: "#c62836" },
+        { name: "Noir", value: "#171717" },
+        { name: "Rose", value: "#e99ab8" },
+        { name: "Violet", value: "#7543a0" },
+        { name: "Marron", value: "#805438" },
+        { name: "Blanc", value: "#ffffff" },
+        { name: "Vert", value: "#28734c" }
+      ]
+    },
     {
       id: "robe-rose",
       name: "Robe longue rose à volants",

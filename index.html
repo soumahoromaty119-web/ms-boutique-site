@@ -1785,6 +1785,213 @@ document.addEventListener("DOMContentLoaded",function(){
 });
 </script>
 <script>
+/* M&S — ANIMATIONS ÉTAPE B : CHARGEMENT, MENU, HERO 3D, CARROUSEL, TITRES */
+(function(){
+  "use strict";
+  if(window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  var E="cubic-bezier(.16,1,.3,1)";
+  var css="";
+  function safe(fn){ try{ fn(); }catch(err){ if(window.console) console.warn("MS animations :",err); } }
+
+  /* ===== 1. CHARGEMENT : anneau lumineux + rideau qui se lève ===== */
+  css+=".ms-ring{width:96px;height:96px;margin-bottom:26px;border-radius:50%;background:conic-gradient(from 0deg,#d9b8f7,rgba(217,184,247,0) 72%);-webkit-mask:radial-gradient(circle,transparent 58%,#000 60%);mask:radial-gradient(circle,transparent 58%,#000 60%);animation:msSpin 1.2s linear infinite}";
+  css+="@keyframes msSpin{to{transform:rotate(360deg)}}";
+  css+="html body .preloader{transition:transform 1s cubic-bezier(.77,0,.18,1),visibility 0s linear 1s}";
+  css+="html body .preloader.hide{transform:translateY(-100%);opacity:1;visibility:hidden}";
+  safe(function(){
+    var pre=document.querySelector(".preloader");
+    if(pre){ var ring=document.createElement("div"); ring.className="ms-ring"; pre.insertBefore(ring,pre.firstChild); }
+  });
+
+  /* ===== 2. MENU PLEIN ÉCRAN (téléphone) ===== */
+  css+="@media(max-width:700px){"+
+    "html body header{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(255,255,255,.97)}"+
+    "html body #mainNav{position:fixed;top:0;left:0;right:0;bottom:0;width:100%;height:100vh;height:100dvh;max-height:none!important;padding:110px 8% 60px!important;background:radial-gradient(circle at 85% 8%,#7a4bb0,#30243b 62%);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;overflow:hidden;opacity:1!important;visibility:hidden;clip-path:circle(0 at calc(100% - 40px) 38px);transition:clip-path .8s cubic-bezier(.7,0,.2,1),visibility 0s linear .8s;box-shadow:none;border:0!important;z-index:4}"+
+    "html body #mainNav.open{visibility:visible;clip-path:circle(150% at calc(100% - 40px) 38px);transition:clip-path .8s cubic-bezier(.7,0,.2,1),visibility 0s}"+
+    "html body #mainNav a{font-family:'Playfair Display',serif;font-size:34px;font-weight:600;color:#fff;padding:12px 0;width:auto;border:0;opacity:0;transform:translateY(34px)}"+
+    "html body #mainNav.open a{opacity:1;transform:none;transition:opacity .6s ease,transform .8s "+E+"}"+
+    "html body #mainNav.open a:nth-child(1){transition-delay:.35s}html body #mainNav.open a:nth-child(2){transition-delay:.43s}html body #mainNav.open a:nth-child(3){transition-delay:.51s}html body #mainNav.open a:nth-child(4){transition-delay:.59s}html body #mainNav.open a:nth-child(5){transition-delay:.67s}"+
+    "html body #menuToggle,html body header .logo{position:relative;z-index:6}"+
+    "html body.ms-menu-open #menuToggle,html body.ms-menu-open header .logo{color:#fff}"+
+    "html body.ms-menu-open header .logo span{color:#d9b8f7}"+
+  "}";
+  safe(function(){
+    var nav=document.getElementById("mainNav");
+    if(!nav) return;
+    new MutationObserver(function(){
+      var open=nav.classList.contains("open");
+      document.body.classList.toggle("ms-menu-open",open);
+      document.documentElement.style.overflow=open?"hidden":"";
+    }).observe(nav,{attributes:true,attributeFilter:["class"]});
+  });
+
+  /* ===== 3. HERO : pile de photos en 3D ===== */
+  css+=".ms-stack{position:absolute;right:7%;top:50%;width:min(300px,30vw);aspect-ratio:3/4;transform:translateY(-50%);z-index:2;perspective:1000px;cursor:pointer;animation:msFloat 6s ease-in-out infinite}";
+  css+="@keyframes msFloat{50%{translate:0 -12px}}";
+  css+=".ms-stack-in{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .5s ease-out}";
+  css+=".ms-sc{position:absolute;inset:0;border-radius:14px;overflow:hidden;border:4px solid #fff;box-shadow:0 25px 55px rgba(0,0,0,.35);background:#e8dcef;transition:transform .9s "+E+",opacity .9s ease;transform:translate3d(calc(var(--p)*34px),calc(var(--p)*-18px),calc(var(--p)*-70px)) rotate(calc(var(--p)*5deg - 5deg))}";
+  css+=".ms-sc img{width:100%;height:100%;object-fit:cover;display:block}";
+  css+=".ms-sc.ms-gone{opacity:0}";
+  css+="@media(max-width:960px){html body .hero{flex-direction:column;align-items:stretch;min-height:0}html body .ms-stack{position:relative;right:auto;top:auto;transform:none;width:min(230px,58vw);margin:34px auto 0;order:-1}}";
+  safe(function(){
+    var hero=document.querySelector(".hero");
+    if(!hero) return;
+    var list=["robe-rose.jpg","ensemble-smocke-fuchsia.jpg","ensemble-carreaux.jpg","ensemble-rouge.jpg"];
+    var ok=[],left=list.length;
+    list.forEach(function(src){
+      var im=new Image();
+      im.onload=function(){ ok.push(src); done(); };
+      im.onerror=done;
+      im.src=src;
+    });
+    function done(){
+      if(--left) return;
+      var good=list.filter(function(s){ return ok.indexOf(s)>-1; });
+      if(good.length>=2) build(good);
+    }
+    function build(imgs){
+      var stack=document.createElement("div"); stack.className="ms-stack"; stack.setAttribute("aria-hidden","true");
+      var inner=document.createElement("div"); inner.className="ms-stack-in"; stack.appendChild(inner);
+      var cards=imgs.map(function(src){
+        var c=document.createElement("div"); c.className="ms-sc";
+        var im=document.createElement("img"); im.src=src; im.alt=""; c.appendChild(im);
+        inner.appendChild(c); return c;
+      });
+      hero.appendChild(stack);
+      var front=0,n=cards.length,visible=true,last=Date.now();
+      function render(){
+        cards.forEach(function(c,i){
+          var p=(i-front+n)%n;
+          c.style.setProperty("--p",p);
+          c.style.zIndex=n-p;
+          c.classList.toggle("ms-gone",p>2);
+        });
+      }
+      function next(){ front=(front+1)%n; last=Date.now(); render(); }
+      render();
+      stack.addEventListener("click",next);
+      setInterval(function(){ if(visible&&!document.hidden&&Date.now()-last>3600) next(); },3800);
+      new IntersectionObserver(function(es){ visible=es[0].isIntersecting; }).observe(hero);
+      hero.addEventListener("pointermove",function(e){
+        var r=hero.getBoundingClientRect();
+        var x=(e.clientX-r.left)/r.width-.5, y=(e.clientY-r.top)/r.height-.5;
+        inner.style.transform="rotateY("+(x*16)+"deg) rotateX("+(-y*16)+"deg)";
+      },{passive:true});
+    }
+  });
+
+  /* ===== 4. CARROUSEL 3D DES ARTICLES ===== */
+  css+="html body #productsGrid{position:relative;display:flex;gap:18px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;padding:30px calc(50% - min(38vw,170px)) 40px;perspective:1100px;scrollbar-width:none;-webkit-overflow-scrolling:touch}";
+  css+="#productsGrid::-webkit-scrollbar{display:none}";
+  css+="html body #productsGrid .product-card{flex:0 0 min(76vw,340px);scroll-snap-align:center;transition:opacity .9s ease,filter .9s ease,box-shadow .5s!important}";
+  css+=".ms-ctrl{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:6px}";
+  css+=".ms-ctrl button{width:46px;height:46px;border-radius:50%;border:1px solid var(--purple);background:#fff;color:var(--purple);font-size:16px;transition:background .3s,color .3s,transform .3s}";
+  css+=".ms-ctrl button:hover{background:var(--purple);color:#fff;transform:translateY(-3px)}";
+  css+=".ms-dots{display:flex;gap:8px;align-items:center}";
+  css+=".ms-dots i{width:9px;height:9px;border-radius:9px;background:#d8c5e8;transition:width .4s "+E+",background .3s}";
+  css+=".ms-dots i.on{width:28px;background:var(--purple)}";
+  safe(function(){
+    var grid=document.getElementById("productsGrid");
+    if(!grid) return;
+    var ctrl=document.createElement("div"); ctrl.className="ms-ctrl";
+    ctrl.innerHTML='<button type="button" class="ms-prev" aria-label="Article précédent">←</button><div class="ms-dots"></div><button type="button" class="ms-pp" aria-label="Pause">❚❚</button><button type="button" class="ms-next" aria-label="Article suivant">→</button>';
+    grid.parentNode.insertBefore(ctrl,grid.nextSibling);
+    var dots=ctrl.querySelector(".ms-dots"),pp=ctrl.querySelector(".ms-pp");
+    var cards=[],playing=true,holdUntil=0,inView=true,ticking=false;
+    var can3d=!!(window.CSS&&CSS.supports&&CSS.supports("rotate","0 1 0 10deg"));
+
+    function vis(){ return [].slice.call(grid.querySelectorAll(".product-card")).filter(function(c){ return c.offsetParent!==null; }); }
+    function centerOf(c){ return c.offsetLeft+c.offsetWidth/2; }
+    function current(){
+      var mid=grid.scrollLeft+grid.clientWidth/2,best=0,bd=1e9;
+      cards.forEach(function(c,i){ var d=Math.abs(centerOf(c)-mid); if(d<bd){ bd=d; best=i; } });
+      return best;
+    }
+    function go(i){
+      if(!cards.length) return;
+      i=Math.max(0,Math.min(cards.length-1,i));
+      grid.scrollTo({left:centerOf(cards[i])-grid.clientWidth/2,behavior:"smooth"});
+    }
+    function paint(){
+      var mid=grid.scrollLeft+grid.clientWidth/2,cur=current();
+      cards.forEach(function(c){
+        var d=(centerOf(c)-mid)/c.offsetWidth;
+        d=Math.max(-1.6,Math.min(1.6,d));
+        c.style.scale=String(1-Math.min(Math.abs(d),1)*.12);
+        if(can3d) c.style.rotate="0 1 0 "+(-d*20)+"deg";
+      });
+      [].forEach.call(dots.children,function(dot,i){ dot.classList.toggle("on",i===cur); });
+    }
+    function rebuild(){
+      cards=vis();
+      dots.innerHTML=cards.map(function(){ return "<i></i>"; }).join("");
+      ctrl.style.display=cards.length>1?"flex":"none";
+      paint();
+    }
+    grid.addEventListener("scroll",function(){
+      if(ticking) return; ticking=true;
+      requestAnimationFrame(function(){ paint(); ticking=false; });
+    },{passive:true});
+    function hold(){ holdUntil=Date.now()+8000; }
+    ctrl.querySelector(".ms-prev").addEventListener("click",function(){ hold(); go(current()-1); });
+    ctrl.querySelector(".ms-next").addEventListener("click",function(){ hold(); go(current()+1); });
+    pp.addEventListener("click",function(){ playing=!playing; pp.textContent=playing?"❚❚":"▶"; pp.setAttribute("aria-label",playing?"Pause":"Lecture"); });
+    grid.addEventListener("pointerdown",hold);
+    grid.addEventListener("touchstart",hold,{passive:true});
+    new IntersectionObserver(function(es){ inView=es[0].isIntersecting; }).observe(grid);
+    setInterval(function(){
+      if(!playing||!inView||document.hidden||Date.now()<holdUntil||cards.length<2) return;
+      var i=current(); go(i+1>=cards.length?0:i+1);
+    },4500);
+    function refresh(){ setTimeout(function(){ rebuild(); grid.scrollTo({left:0}); paint(); },90); }
+    document.addEventListener("click",function(e){ if(e.target.closest&&e.target.closest(".filter-btn,[data-category-link]")) refresh(); });
+    document.addEventListener("input",function(e){ if(e.target&&e.target.type==="search") refresh(); });
+    window.addEventListener("resize",rebuild);
+    window.addEventListener("load",function(){ setTimeout(rebuild,200); });
+    rebuild();
+  });
+
+  /* ===== 5. TITRES MASQUÉS, VAGUES, EFFET AU TOUCHER ===== */
+  css+=".ms-word{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.14em}";
+  css+=".ms-word>span{display:inline-block;transform:translateY(115%);transition:transform .95s "+E+" calc(var(--w)*80ms + 120ms)}";
+  css+=".show .ms-word>span{transform:none}";
+  var wave="url(\"data:image/svg+xml,"+encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 60' preserveAspectRatio='none'><path d='M0 60V28C200 -6 400 62 600 28S1000 -6 1200 28V60Z'/></svg>")+"\")";
+  css+=".products-section::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:46px;background:#fff;-webkit-mask:"+wave+" bottom/100% 100% no-repeat;mask:"+wave+" bottom/100% 100% no-repeat;pointer-events:none}";
+  css+=".about::after{content:'';position:absolute;left:0;right:0;top:-1px;height:46px;background:#fff;transform:scaleY(-1);-webkit-mask:"+wave+" bottom/100% 100% no-repeat;mask:"+wave+" bottom/100% 100% no-repeat;pointer-events:none}";
+  css+=".filter-btn,.ms-action-btn,.card-btn,.ms-ctrl button{position:relative;overflow:hidden}";
+  css+=".ms-ripple{position:absolute;border-radius:50%;pointer-events:none;background:currentColor;opacity:.22;transform:scale(0);animation:msRip .7s ease-out forwards}";
+  css+="@keyframes msRip{to{transform:scale(1);opacity:0}}";
+  safe(function(){
+    document.querySelectorAll(".section-heading h2,.promo h2").forEach(function(h){
+      if(h.getAttribute("data-ms")) return;
+      h.setAttribute("data-ms","1");
+      var words=h.textContent.trim().split(/\s+/);
+      h.textContent="";
+      words.forEach(function(w,i){
+        var o=document.createElement("span"); o.className="ms-word";
+        var s=document.createElement("span"); s.style.setProperty("--w",i); s.textContent=w;
+        o.appendChild(s); h.appendChild(o);
+        if(i<words.length-1) h.appendChild(document.createTextNode(" "));
+      });
+    });
+    document.addEventListener("pointerdown",function(e){
+      var b=e.target.closest&&e.target.closest(".primary-btn,.filter-btn,.ms-action-btn,.card-btn,.ms-ctrl button");
+      if(!b) return;
+      var r=b.getBoundingClientRect(),s=Math.max(r.width,r.height)*2;
+      var sp=document.createElement("span"); sp.className="ms-ripple";
+      sp.style.cssText="width:"+s+"px;height:"+s+"px;left:"+(e.clientX-r.left-s/2)+"px;top:"+(e.clientY-r.top-s/2)+"px";
+      b.appendChild(sp);
+      setTimeout(function(){ if(sp.parentNode) sp.parentNode.removeChild(sp); },700);
+    });
+  });
+
+  var style=document.createElement("style");
+  style.id="msAnimStepB";
+  style.textContent=css;
+  document.body.appendChild(style);
+})();
+</script><script>
 /* M&S — VRAIES PHOTOS + NOUVEL ARTICLE (à placer AVANT le script du panier) */
 (function(){
   "use strict";

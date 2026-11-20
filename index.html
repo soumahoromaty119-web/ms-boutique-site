@@ -2476,5 +2476,136 @@ document.addEventListener("DOMContentLoaded",function(){
   synchronize();
 })();
 </script>
-</body>
+<script>
+/* M&S — HERO 3D : SOIE VIOLETTE */
+(function(){
+  "use strict";
+  var hero=document.querySelector(".hero");
+  if(!hero||window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  var loader=document.createElement("script");
+  loader.src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js";
+  loader.onload=start;
+  document.head.appendChild(loader);
+
+  function start(){
+    if(typeof THREE==="undefined") return;
+    var mobile=window.innerWidth<701;
+    var canvas=document.createElement("canvas");
+    canvas.setAttribute("aria-hidden","true");
+    canvas.style.cssText="position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;opacity:0;transition:opacity 1.6s ease";
+
+    var renderer;
+    try{
+      renderer=new THREE.WebGLRenderer({canvas:canvas,alpha:true,antialias:!mobile,powerPreference:"high-performance"});
+    }catch(e){ return; }
+
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio,mobile?1.5:2));
+    renderer.setClearColor(0x000000,0);
+    hero.insertBefore(canvas,hero.firstChild);
+
+    var orbit=hero.querySelector(".hero-orbit");
+    if(orbit) orbit.style.display="none";
+
+    var scene=new THREE.Scene();
+    var camera=new THREE.PerspectiveCamera(40,1,.1,50);
+    camera.position.set(0,0,6);
+
+    scene.add(new THREE.HemisphereLight(0xe9d7ff,0x2a1a3d,.9));
+    var key=new THREE.DirectionalLight(0xffd9f2,1.4);
+    key.position.set(3,3,4);
+    scene.add(key);
+    var rim=new THREE.DirectionalLight(0x9a6bff,1.1);
+    rim.position.set(-4,-1,2);
+    scene.add(rim);
+
+    var SEG=mobile?34:64;
+    var geo=new THREE.PlaneGeometry(5,3.6,SEG,SEG);
+    var base=geo.attributes.position.array.slice();
+    var mat=new THREE.MeshStandardMaterial({
+      color:0x8b5cc4,roughness:.32,metalness:.18,
+      side:THREE.DoubleSide,transparent:true,opacity:.93
+    });
+    var cloth=new THREE.Mesh(geo,mat);
+    var group=new THREE.Group();
+    group.add(cloth);
+    scene.add(group);
+
+    var N=mobile?60:140;
+    var pp=new Float32Array(N*3);
+    for(var i=0;i<N;i++){
+      pp[i*3]=(Math.random()-.5)*8;
+      pp[i*3+1]=(Math.random()-.5)*5;
+      pp[i*3+2]=Math.random()*3-1;
+    }
+    var pg=new THREE.BufferGeometry();
+    pg.setAttribute("position",new THREE.BufferAttribute(pp,3));
+    var sparks=new THREE.Points(pg,new THREE.PointsMaterial({
+      color:0xf3e3ff,size:.045,transparent:true,opacity:.85,
+      blending:THREE.AdditiveBlending,depthWrite:false
+    }));
+    scene.add(sparks);
+
+    function layout(){
+      var w=hero.clientWidth,h=hero.clientHeight;
+      renderer.setSize(w,h,false);
+      camera.aspect=w/h;
+      camera.updateProjectionMatrix();
+      var narrow=w<700;
+      group.position.set(narrow?.5:1.9,narrow?-.9:0,0);
+      group.scale.setScalar(narrow?.7:1);
+    }
+    layout();
+    if("ResizeObserver" in window){
+      new ResizeObserver(layout).observe(hero);
+    }else{
+      window.addEventListener("resize",layout);
+    }
+
+    var tx=0,ty=0,cx=0,cy=0;
+    hero.addEventListener("pointermove",function(e){
+      var r=hero.getBoundingClientRect();
+      tx=(e.clientX-r.left)/r.width-.5;
+      ty=(e.clientY-r.top)/r.height-.5;
+    },{passive:true});
+
+    var pos=geo.attributes.position;
+    var clock=new THREE.Clock();
+    var visible=true;
+    new IntersectionObserver(function(es){
+      visible=es[0].isIntersecting;
+    }).observe(hero);
+
+    function frame(){
+      requestAnimationFrame(frame);
+      if(!visible||document.hidden) return;
+      var t=clock.getElapsedTime();
+      var a=pos.array;
+      for(var i=0;i<a.length;i+=3){
+        var x=base[i],y=base[i+1];
+        a[i+2]=Math.sin(x*1.3+t*1.1)*.42+
+               Math.sin(y*1.9+t*.8)*.26+
+               Math.sin((x+y)*1.1+t*1.5)*.16;
+      }
+      pos.needsUpdate=true;
+      geo.computeVertexNormals();
+      cx+=(tx-cx)*.05;
+      cy+=(ty-cy)*.05;
+      group.rotation.set(.15+cy*.35,-.55+cx*.5,-.12);
+      var baseY=window.innerWidth<701?-.9:0;
+      group.position.y=Math.sin(t*.6)*.12+baseY;
+      var sp=pg.attributes.position.array;
+      for(var j=0;j<N;j++){
+        sp[j*3+1]+=.004+(j%5)*.0008;
+        if(sp[j*3+1]>2.6) sp[j*3+1]=-2.6;
+      }
+      pg.attributes.position.needsUpdate=true;
+      sparks.rotation.y=t*.03+cx*.2;
+      renderer.render(scene,camera);
+    }
+    frame();
+    requestAnimationFrame(function(){ canvas.style.opacity="1"; });
+  }
+})();
+</script></body>
 </html>

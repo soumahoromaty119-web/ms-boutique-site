@@ -3365,7 +3365,22 @@ document.addEventListener("DOMContentLoaded",function(){
     return Number(value).toLocaleString("fr-FR") + " FCFA";
   }
 
-  document.addEventListener("click", async function (event) {
+  
+  let msOrderLaunchLocked = false;
+
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden && msOrderLaunchLocked) {
+      msOrderLaunchLocked = false;
+
+      const orderButton = document.getElementById("msPrepareOrder");
+
+      if (orderButton) {
+        orderButton.disabled = false;
+        orderButton.textContent = "Préparer ma commande";
+      }
+    }
+  });
+      document.addEventListener("click", async function (event) {
     const clicked = event.target.closest("#msPrepareOrder");
     if (!clicked) return;
 

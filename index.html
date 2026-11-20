@@ -2883,5 +2883,194 @@ document.addEventListener("DOMContentLoaded",function(){
     }
   });
 })();
-</script></body>
+</script>
+
+<style>
+.ms-customer-fields {
+  display:grid;
+  gap:12px;
+  margin:20px 0;
+  padding:16px;
+  background:#faf7fc;
+  border:1px solid #eee5f5;
+  border-radius:16px;
+}
+.ms-customer-fields h3 {
+  margin:0 0 4px;
+  color:#30243b;
+  font-size:16px;
+}
+.ms-customer-fields label {
+  display:block;
+  margin-bottom:6px;
+  color:#493957;
+  font-size:13px;
+  font-weight:700;
+}
+.ms-customer-fields input,
+.ms-customer-fields textarea {
+  box-sizing:border-box;
+  width:100%;
+  min-height:44px;
+  padding:12px;
+  border:1px solid #e3d9eb;
+  border-radius:10px;
+  background:#fff;
+  color:#30243b;
+  font:inherit;
+  font-size:14px;
+}
+.ms-customer-fields textarea {
+  min-height:75px;
+  resize:vertical;
+}
+.ms-customer-fields input:focus,
+.ms-customer-fields textarea:focus {
+  outline:2px solid #9568c2;
+  border-color:#9568c2;
+}
+.ms-customer-fields .ms-required {
+  color:#b52d42;
+}
+</style>
+
+<script>
+(function () {
+  "use strict";
+
+  const panel = document.querySelector("#msCartLayer .ms-panel");
+  const orderButton = document.getElementById("msPrepareOrder");
+
+  if (!panel || !orderButton) return;
+
+  if (!document.getElementById("msCustomerFields")) {
+    orderButton.insertAdjacentHTML("beforebegin", `
+      <div class="ms-customer-fields" id="msCustomerFields">
+        <h3>Informations de livraison</h3>
+
+        <div>
+          <label for="msCustomerName">Nom et prénom <span class="ms-required">*</span></label>
+          <input id="msCustomerName" type="text" autocomplete="name" placeholder="Ton nom complet" required>
+        </div>
+
+        <div>
+          <label for="msCustomerPhone">Téléphone <span class="ms-required">*</span></label>
+          <input id="msCustomerPhone" type="tel" autocomplete="tel" placeholder="Ex. : 07 XX XX XX XX" required>
+        </div>
+
+        <div>
+          <label for="msCustomerCity">Ville ou commune <span class="ms-required">*</span></label>
+          <input id="msCustomerCity" type="text" autocomplete="address-level2" placeholder="Ex. : Abidjan" required>
+        </div>
+
+        <div>
+          <label for="msCustomerAddress">Quartier et adresse <span class="ms-required">*</span></label>
+          <input id="msCustomerAddress" type="text" autocomplete="street-address" placeholder="Ton quartier et un repère" required>
+        </div>
+
+        <div>
+          <label for="msCustomerNote">Instructions complémentaires (facultatif)</label>
+          <textarea id="msCustomerNote" placeholder="Précisions utiles pour la livraison..."></textarea>
+        </div>
+      </div>
+    `);
+  }
+
+  function fieldValue(id) {
+    return document.getElementById(id).value.trim();
+  }
+
+  function money(value) {
+    return Number(value).toLocaleString("fr-FR") + " FCFA";
+  }
+
+  document.addEventListener("click", async function (event) {
+    const clicked = event.target.closest("#msPrepareOrder");
+    if (!clicked) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+
+    const name = fieldValue("msCustomerName");
+    const phone = fieldValue("msCustomerPhone");
+    const city = fieldValue("msCustomerCity");
+    const address = fieldValue("msCustomerAddress");
+    const note = fieldValue("msCustomerNote");
+
+    if (!name || !phone || !city || !address) {
+      alert("Merci de remplir toutes les informations obligatoires de livraison.");
+      const missing = [
+        ["msCustomerName", name],
+        ["msCustomerPhone", phone],
+        ["msCustomerCity", city],
+        ["msCustomerAddress", address]
+      ].find(item => !item[1]);
+
+      if (missing) document.getElementById(missing[0]).focus();
+      return;
+    }
+
+    let cart = [];
+
+    try {
+      cart = JSON.parse(localStorage.getItem("ms_boutique_cart_v1") || "[]");
+    } catch (error) {
+      alert("Impossible de lire ton panier. Réessaie.");
+      return;
+    }
+
+    if (!Array.isArray(cart) || !cart.length) {
+      alert("Ton panier est vide.");
+      return;
+    }
+
+    const total = cart.reduce((sum, item) =>
+      sum + Number(item.price) * Number(item.qty), 0
+    );
+
+    const products = cart.map((item, index) =>
+      (index + 1) + ". " + item.name + "\n" +
+      "   Taille : " + item.size + "\n" +
+      "   Couleur : " + item.color + "\n" +
+      "   Quantité : " + item.qty + "\n" +
+      "   Prix : " + money(item.price * item.qty)
+    ).join("\n\n");
+
+    const message =
+      "BONJOUR M&S BOUTIQUE !\n\n" +
+      "Je souhaite confirmer cette commande :\n\n" +
+      products + "\n\n" +
+      "TOTAL ESTIMÉ : " + money(total) + "\n\n" +
+      "INFORMATIONS DU CLIENT\n" +
+      "Nom : " + name + "\n" +
+      "Téléphone : " + phone + "\n" +
+      "Ville / Commune : " + city + "\n" +
+      "Adresse : " + address + "\n" +
+      (note ? "Instructions : " + note + "\n" : "") +
+      "\nMerci de me confirmer la disponibilité et les modalités de livraison.";
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "Commande M&S BOUTIQUE",
+          text: message
+        });
+        return;
+      } catch (error) {
+        if (error.name === "AbortError") return;
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(message);
+      alert("Récapitulatif copié ! Tu peux maintenant le partager avec M&S BOUTIQUE.");
+    } catch (error) {
+      window.prompt("Copie ton récapitulatif de commande :", message);
+    }
+  }, true);
+})();
+</script>
+
+</body>
 </html>

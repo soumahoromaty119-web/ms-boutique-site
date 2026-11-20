@@ -37,7 +37,7 @@ body{
   color:var(--deep);
   background:#fff;
   overflow-x:hidden;
-  perspective:1400px;
+    perspective:none;
 }
 
 body.loading{overflow:hidden}
@@ -2408,7 +2408,7 @@ document.addEventListener("DOMContentLoaded",function(){
     document.getElementById("msCartLayer")
   ].filter(Boolean);
 
-  if (!layers.length) return;
+    return;
 
   let locked = false;
   let savedScrollY = 0;

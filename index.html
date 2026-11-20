@@ -3361,7 +3361,91 @@ document.addEventListener("DOMContentLoaded",function(){
 
     overlay.querySelector(".ms3d-success-button").focus();
   }
-  function money(value) {
+  
+  function showOrderSentQuestion() {
+    if (document.getElementById("msOrderSentQuestion")) return;
+
+    const overlay = document.createElement("div");
+    overlay.id = "msOrderSentQuestion";
+    overlay.innerHTML = `
+      <div class="ms-order-question-card">
+        <div class="ms-order-question-icon">?</div>
+        <h2>As-tu envoyé ta commande ?</h2>
+        <p>Si tu as envoyé ton message sur WhatsApp, confirme pour terminer cette étape.</p>
+        <button type="button" class="ms-order-sent-yes">Oui, j'ai envoyé ma commande</button>
+        <button type="button" class="ms-order-sent-no">Non, pas encore</button>
+      </div>
+    `;
+
+    const style = document.createElement("style");
+    style.textContent = `
+      #msOrderSentQuestion {
+        position:fixed; inset:0; z-index:100002; display:flex;
+        align-items:center; justify-content:center; padding:22px;
+        background:rgba(25,15,38,.62); backdrop-filter:blur(12px);
+        -webkit-backdrop-filter:blur(12px); opacity:0;
+        transition:opacity .3s ease; perspective:1000px;
+      }
+      #msOrderSentQuestion.ms-show { opacity:1; }
+      #msOrderSentQuestion .ms-order-question-card {
+        width:min(100%,370px); padding:30px 23px; text-align:center;
+        color:#39264d; background:linear-gradient(145deg,#fff,#f2eaff);
+        border:1px solid #fff; border-radius:26px;
+        box-shadow:0 28px 80px rgba(15,5,30,.38);
+        transform:translateY(35px) rotateX(12deg) scale(.9);
+        transition:transform .55s cubic-bezier(.2,1.4,.4,1);
+      }
+      #msOrderSentQuestion.ms-show .ms-order-question-card {
+        transform:translateY(0) rotateX(0) scale(1);
+      }
+      #msOrderSentQuestion .ms-order-question-icon {
+        width:58px; height:58px; margin:0 auto 15px; display:grid;
+        place-items:center; border-radius:19px; color:#fff;
+        font-size:32px; font-weight:800;
+        background:linear-gradient(145deg,#9b70d0,#6842a0);
+        box-shadow:0 9px 0 #4d3178,0 16px 25px rgba(91,55,139,.3);
+      }
+      #msOrderSentQuestion h2 { margin:0 0 10px; font-size:23px; }
+      #msOrderSentQuestion p { margin:0 0 22px; line-height:1.55; color:#695b78; }
+      #msOrderSentQuestion button {
+        width:100%; padding:14px 12px; border:0; border-radius:14px;
+        font:inherit; font-weight:750; cursor:pointer;
+      }
+      #msOrderSentQuestion .ms-order-sent-yes {
+        color:#fff; background:linear-gradient(135deg,#8053b5,#59358a);
+        box-shadow:0 5px 0 #422568,0 10px 20px rgba(80,48,120,.2);
+      }
+      #msOrderSentQuestion .ms-order-sent-no {
+        margin-top:13px; color:#513b68; background:#e9def5;
+      }
+    `;
+    document.head.appendChild(style);
+    document.body.appendChild(overlay);
+
+    const closeQuestion = () => {
+      overlay.classList.remove("ms-show");
+      setTimeout(() => {
+        overlay.remove();
+        style.remove();
+      }, 300);
+    };
+
+    overlay.querySelector(".ms-order-sent-yes").addEventListener("click", () => {
+      sessionStorage.removeItem("ms_order_pending_confirmation");
+      localStorage.removeItem("ms_boutique_cart_v1");
+      window.location.reload();
+    });
+
+    overlay.querySelector(".ms-order-sent-no").addEventListener("click", () => {
+      sessionStorage.removeItem("ms_order_pending_confirmation");
+      closeQuestion();
+    });
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => overlay.classList.add("ms-show"));
+    });
+  }
+function money(value) {
     return Number(value).toLocaleString("fr-FR") + " FCFA";
   }
 

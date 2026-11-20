@@ -3153,6 +3153,214 @@ document.addEventListener("DOMContentLoaded",function(){
     overlay.querySelector(".ms3d-button").focus();
   }
   
+  
+  function showOrderReady() {
+    if (document.getElementById("ms3DOrderReady")) return;
+
+    if (!document.getElementById("ms3DOrderReadyStyle")) {
+      const style = document.createElement("style");
+      style.id = "ms3DOrderReadyStyle";
+      style.textContent = `
+        #ms3DOrderReady {
+          position:fixed;
+          inset:0;
+          z-index:100001;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          padding:22px;
+          background:rgba(25,15,38,.55);
+          backdrop-filter:blur(12px);
+          -webkit-backdrop-filter:blur(12px);
+          opacity:0;
+          transition:opacity .35s ease;
+          perspective:1200px;
+        }
+
+        #ms3DOrderReady.ms3d-show {
+          opacity:1;
+        }
+
+        #ms3DOrderReady .ms3d-success-card {
+          position:relative;
+          width:min(100%,370px);
+          padding:32px 25px 25px;
+          overflow:hidden;
+          text-align:center;
+          color:#39264d;
+          background:linear-gradient(145deg,#fff,#f2eaff);
+          border:1px solid rgba(255,255,255,.95);
+          border-radius:27px;
+          box-shadow:0 30px 90px rgba(15,5,30,.35),
+                     inset 0 2px 6px #fff;
+          transform:translateY(45px) rotateX(14deg) scale(.82);
+          opacity:0;
+          transition:transform .65s cubic-bezier(.2,1.4,.4,1),
+                     opacity .4s ease;
+        }
+
+        #ms3DOrderReady.ms3d-show .ms3d-success-card {
+          transform:translateY(0) rotateX(0) scale(1);
+          opacity:1;
+        }
+
+        #ms3DOrderReady .ms3d-success-glow {
+          position:absolute;
+          width:210px;
+          height:210px;
+          top:-125px;
+          left:50%;
+          transform:translateX(-50%);
+          border-radius:50%;
+          background:#b9f3dc;
+          filter:blur(48px);
+          opacity:.7;
+          pointer-events:none;
+        }
+
+        #ms3DOrderReady .ms3d-success-icon {
+          position:relative;
+          display:grid;
+          place-items:center;
+          width:88px;
+          height:88px;
+          margin:0 auto 22px;
+          border-radius:28px;
+          color:white;
+          font-size:48px;
+          font-weight:900;
+          background:linear-gradient(145deg,#65e6b2,#16b981 65%,#07865f);
+          box-shadow:0 12px 0 #087a58,
+                     0 22px 35px rgba(16,185,129,.3),
+                     inset 0 4px 8px rgba(255,255,255,.65);
+          animation:ms3DOrderPulse 2.4s ease-in-out infinite;
+        }
+
+        #ms3DOrderReady .ms3d-success-icon::after {
+          content:"";
+          position:absolute;
+          inset:5px;
+          border:1px solid rgba(255,255,255,.45);
+          border-radius:23px;
+        }
+
+        #ms3DOrderReady h3 {
+          margin:0 0 12px;
+          font-size:23px;
+          font-weight:900;
+          letter-spacing:-.6px;
+        }
+
+        #ms3DOrderReady p {
+          margin:0 auto 22px;
+          max-width:290px;
+          color:#75677f;
+          font-size:14px;
+          line-height:1.7;
+        }
+
+        #ms3DOrderReady .ms3d-success-note {
+          margin:0 auto 22px;
+          padding:12px 14px;
+          border:1px solid rgba(22,185,129,.2);
+          border-radius:14px;
+          color:#087a58;
+          background:rgba(22,185,129,.09);
+          font-size:12px;
+          font-weight:750;
+          line-height:1.6;
+        }
+
+        #ms3DOrderReady .ms3d-success-button {
+          width:100%;
+          min-height:50px;
+          border:0;
+          border-radius:15px;
+          color:white;
+          font-size:14px;
+          font-weight:850;
+          background:linear-gradient(110deg,#633b91,#9568c2);
+          box-shadow:0 7px 0 #4e2d76,
+                     0 13px 25px rgba(99,59,145,.25);
+          cursor:pointer;
+          transition:transform .2s,box-shadow .2s;
+        }
+
+        #ms3DOrderReady .ms3d-success-button:active {
+          transform:translateY(4px);
+          box-shadow:0 3px 0 #4e2d76;
+        }
+
+        @keyframes ms3DOrderPulse {
+          0%,100% {transform:translateY(0) rotate(-3deg)}
+          50% {transform:translateY(-8px) rotate(3deg)}
+        }
+
+        @media(prefers-reduced-motion:reduce) {
+          #ms3DOrderReady *,
+          #ms3DOrderReady {
+            animation:none!important;
+            transition:none!important;
+          }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    const overlay = document.createElement("div");
+    overlay.id = "ms3DOrderReady";
+    overlay.setAttribute("role", "dialog");
+    overlay.setAttribute("aria-modal", "true");
+    overlay.setAttribute("aria-labelledby", "ms3DOrderReadyTitle");
+
+    overlay.innerHTML = `
+      <div class="ms3d-success-card">
+        <div class="ms3d-success-glow"></div>
+        <div class="ms3d-success-icon" aria-hidden="true">✓</div>
+        <h3 id="ms3DOrderReadyTitle">Ta commande est prête !</h3>
+        <p>
+          Ton récapitulatif a été préparé dans WhatsApp.
+          Tu peux maintenant vérifier les informations de ta commande.
+        </p>
+        <div class="ms3d-success-note">
+          Dernière étape : retourne sur WhatsApp et appuie sur
+          « Envoyer » pour transmettre ta commande à M&S BOUTIQUE.
+        </div>
+        <button class="ms3d-success-button" type="button">
+          J'ai compris
+        </button>
+      </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    function closeReady() {
+      if (!document.body.contains(overlay)) return;
+      overlay.classList.remove("ms3d-show");
+      document.removeEventListener("keydown", closeOnEscape);
+
+      setTimeout(() => overlay.remove(), 350);
+    }
+
+    function closeOnEscape(event) {
+      if (event.key === "Escape") closeReady();
+    }
+
+    overlay.querySelector(".ms3d-success-button")
+      .addEventListener("click", closeReady);
+
+    overlay.addEventListener("click", event => {
+      if (event.target === overlay) closeReady();
+    });
+
+    document.addEventListener("keydown", closeOnEscape);
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => overlay.classList.add("ms3d-show"));
+    });
+
+    overlay.querySelector(".ms3d-success-button").focus();
+  }
   function money(value) {
     return Number(value).toLocaleString("fr-FR") + " FCFA";
   }
@@ -3247,7 +3455,14 @@ document.addEventListener("DOMContentLoaded",function(){
       "https://wa.me/2250171123891?text=" +
       encodeURIComponent(message);
 
-    window.location.href = whatsappUrl;
+        const whatsappWindow = window.open(whatsappUrl, "_blank");
+
+    if (whatsappWindow) {
+      whatsappWindow.opener = null;
+      showOrderReady();
+    } else {
+      window.location.href = whatsappUrl;
+      }
 
   }, true);
 })();

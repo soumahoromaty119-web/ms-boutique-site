@@ -3382,7 +3382,7 @@ document.addEventListener("DOMContentLoaded",function(){
   });
       document.addEventListener("click", async function (event) {
     const clicked = event.target.closest("#msPrepareOrder");
-    if (!clicked) return;
+    if (!clicked || msOrderLaunchLocked) return;
 
     event.preventDefault();
     event.stopPropagation();

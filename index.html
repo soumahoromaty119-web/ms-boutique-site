@@ -3611,5 +3611,35 @@ function money(value) {
 })();
 </script>
 
+
+<!-- M&S BOUTIQUE - CONNEXION FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/13.4.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/13.4.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore-compat.js"></script>
+
+<script>
+  const msFirebaseConfig = {
+    apiKey: "AIzaSyAzFNPGm2KIdP2FuOAF9xdVvQgS190seZ0",
+    authDomain: "ms-boutique-1ab84.firebaseapp.com",
+    projectId: "ms-boutique-1ab84",
+    storageBucket: "ms-boutique-1ab84.firebasestorage.app",
+    messagingSenderId: "581136495367",
+    appId: "1:581136495367:web:8eab80bbbebb79b52b4ba2"
+  };
+
+  try {
+    const msFirebaseApp = firebase.apps.length
+      ? firebase.app()
+      : firebase.initializeApp(msFirebaseConfig);
+
+    window.msFirebaseAuth = msFirebaseApp.auth();
+    window.msFirebaseDb = msFirebaseApp.firestore();
+
+    console.log("M&S BOUTIQUE : Firebase connecté avec succès.");
+  } catch (error) {
+    console.error("Erreur de connexion Firebase :", error);
+  }
+</script>
+<!-- FIN CONNEXION FIREBASE -->
 </body>
 </html>

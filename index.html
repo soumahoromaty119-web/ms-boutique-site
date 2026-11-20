@@ -3171,8 +3171,8 @@ document.addEventListener("DOMContentLoaded",function(){
     const address = fieldValue("msCustomerAddress");
     const note = fieldValue("msCustomerNote");
 
+    
     if (!name || !phone || !city || !address) {
-      alert("Merci de remplir toutes les informations obligatoires de livraison.");
       const missing = [
         ["msCustomerName", name],
         ["msCustomerPhone", phone],
@@ -3180,7 +3180,12 @@ document.addEventListener("DOMContentLoaded",function(){
         ["msCustomerAddress", address]
       ].find(item => !item[1]);
 
-      if (missing) document.getElementById(missing[0]).focus();
+      showDeliveryError(() => {
+        if (missing) {
+          document.getElementById(missing[0]).focus();
+        }
+      });
+
       return;
     }
 

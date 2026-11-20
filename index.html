@@ -2049,7 +2049,7 @@ document.addEventListener("DOMContentLoaded",function(){
   });
 
   /* 3. Photos des collections */
-  var COLLECTIONS={robes:"robe-rose.jpg",ensembles:"ensemble-smocke-fuchsia.jpg"};
+    var COLLECTIONS={robes:"couv-robes.jpg",hauts:"couv-hauts.jpg",ensembles:"couv-ensembles.jpg"};
   Object.keys(COLLECTIONS).forEach(function(k){
     var img=document.querySelector('[data-category-link="'+k+'"] img');
     if(img){ img.removeAttribute("srcset"); img.src=COLLECTIONS[k]; }

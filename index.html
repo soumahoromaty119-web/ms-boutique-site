@@ -3242,24 +3242,13 @@ document.addEventListener("DOMContentLoaded",function(){
       (note ? "Instructions : " + note + "\n" : "") +
       "\nMerci de me confirmer la disponibilité et les modalités de livraison.";
 
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: "Commande M&S BOUTIQUE",
-          text: message
-        });
-        return;
-      } catch (error) {
-        if (error.name === "AbortError") return;
-      }
-    }
+    
+    const whatsappUrl =
+      "https://wa.me/2250171123891?text=" +
+      encodeURIComponent(message);
 
-    try {
-      await navigator.clipboard.writeText(message);
-      alert("Récapitulatif copié ! Tu peux maintenant le partager avec M&S BOUTIQUE.");
-    } catch (error) {
-      window.prompt("Copie ton récapitulatif de commande :", message);
-    }
+    window.location.href = whatsappUrl;
+
   }, true);
 })();
 </script>

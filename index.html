@@ -1220,7 +1220,35 @@ footer p{
   }
 }
 </style>
-</head>
+<style>
+/* M&S — GRANDE COUVERTURE : PHOTO DE LA ROBE NOIRE */
+html body .hero{
+  background:#2b1a40;
+  flex-direction:row!important;
+  align-items:center!important;
+  min-height:550px!important;
+}
+html body .hero .ms-stack{display:none}
+html body .hero::before{
+  background:url('couv-hero.jpg') right center/auto 100% no-repeat;
+}
+html body .hero::after{
+  background:
+    linear-gradient(90deg,#2b1a40 0,#2b1a40 calc(104% - 445px),rgba(43,26,64,0) calc(104% - 150px)),
+    linear-gradient(0deg,rgba(30,20,38,.2),transparent);
+}
+@media(max-width:700px){
+  html body .hero{min-height:470px!important}
+  html body .hero::before{
+    background:url('couv-hero.jpg') 62% 12%/cover no-repeat;
+  }
+  html body .hero::after{
+    background:
+      linear-gradient(90deg,rgba(34,20,50,.88),rgba(52,30,78,.52) 62%,rgba(40,24,60,.06)),
+      linear-gradient(0deg,rgba(30,20,38,.35),transparent);
+  }
+}
+</style></head>
 
 <body class="loading">
 

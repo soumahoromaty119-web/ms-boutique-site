@@ -2980,6 +2980,179 @@ document.addEventListener("DOMContentLoaded",function(){
     return document.getElementById(id).value.trim();
   }
 
+  function showDeliveryError(onClose) {
+    if (document.getElementById("ms3DError")) return;
+
+    if (!document.getElementById("ms3DErrorStyle")) {
+      const style = document.createElement("style");
+      style.id = "ms3DErrorStyle";
+      style.textContent = `
+        #ms3DError {
+          position:fixed;
+          inset:0;
+          z-index:100000;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          padding:24px;
+          background:rgba(30,18,42,.48);
+          backdrop-filter:blur(9px);
+          -webkit-backdrop-filter:blur(9px);
+          opacity:0;
+          transition:opacity .3s ease;
+          perspective:1000px;
+        }
+        #ms3DError.ms3d-show {opacity:1}
+        #ms3DError .ms3d-card {
+          position:relative;
+          width:min(100%,360px);
+          padding:30px 24px 24px;
+          overflow:hidden;
+          text-align:center;
+          color:#39264d;
+          background:linear-gradient(145deg,#fff,#f5edfc);
+          border:1px solid rgba(255,255,255,.9);
+          border-radius:25px;
+          box-shadow:0 30px 80px rgba(25,10,40,.3),
+                     inset 0 2px 5px #fff;
+          transform:translateY(35px) rotateX(13deg) scale(.82);
+          opacity:0;
+          transition:transform .55s cubic-bezier(.2,1.4,.4,1),
+                     opacity .35s ease;
+        }
+        #ms3DError.ms3d-show .ms3d-card {
+          transform:translateY(0) rotateX(0) scale(1);
+          opacity:1;
+        }
+        #ms3DError .ms3d-glow {
+          position:absolute;
+          width:190px;
+          height:190px;
+          top:-115px;
+          left:50%;
+          transform:translateX(-50%);
+          border-radius:50%;
+          background:#d9b8ff;
+          filter:blur(45px);
+          opacity:.55;
+          pointer-events:none;
+        }
+        #ms3DError .ms3d-icon {
+          position:relative;
+          display:grid;
+          place-items:center;
+          width:82px;
+          height:82px;
+          margin:0 auto 20px;
+          border-radius:26px;
+          color:white;
+          font-size:43px;
+          font-weight:900;
+          background:linear-gradient(145deg,#ff8b9b,#e43f68 65%,#b92758);
+          box-shadow:0 12px 0 #a92c55,
+                     0 20px 30px rgba(207,49,93,.3),
+                     inset 0 3px 7px rgba(255,255,255,.6);
+          animation:ms3DErrorFloat 2.5s ease-in-out infinite;
+        }
+        #ms3DError .ms3d-icon::after {
+          content:"";
+          position:absolute;
+          inset:5px;
+          border:1px solid rgba(255,255,255,.4);
+          border-radius:21px;
+        }
+        #ms3DError h3 {
+          margin:0 0 10px;
+          font-size:22px;
+          font-weight:850;
+          letter-spacing:-.5px;
+        }
+        #ms3DError p {
+          margin:0 auto 23px;
+          max-width:285px;
+          color:#75677f;
+          font-size:14px;
+          line-height:1.65;
+        }
+        #ms3DError .ms3d-button {
+          width:100%;
+          min-height:49px;
+          border:0;
+          border-radius:14px;
+          color:white;
+          font-size:14px;
+          font-weight:800;
+          background:linear-gradient(110deg,#633b91,#9568c2);
+          box-shadow:0 7px 0 #4e2d76,
+                     0 12px 23px rgba(99,59,145,.25);
+          cursor:pointer;
+          transition:transform .2s,box-shadow .2s;
+        }
+        #ms3DError .ms3d-button:active {
+          transform:translateY(4px);
+          box-shadow:0 3px 0 #4e2d76;
+        }
+        @keyframes ms3DErrorFloat {
+          0%,100% {transform:translateY(0) rotate(-3deg)}
+          50% {transform:translateY(-7px) rotate(3deg)}
+        }
+        @media(prefers-reduced-motion:reduce) {
+          #ms3DError *,#ms3DError {
+            animation:none!important;
+            transition:none!important;
+          }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    const overlay = document.createElement("div");
+    overlay.id = "ms3DError";
+    overlay.setAttribute("role", "alertdialog");
+    overlay.setAttribute("aria-modal", "true");
+    overlay.setAttribute("aria-labelledby", "ms3DErrorTitle");
+    overlay.innerHTML = `
+      <div class="ms3d-card">
+        <div class="ms3d-glow"></div>
+        <div class="ms3d-icon" aria-hidden="true">!</div>
+        <h3 id="ms3DErrorTitle">Petite vérification</h3>
+        <p>Il manque certaines informations pour préparer ta commande. Complète les champs obligatoires et réessaie.</p>
+        <button class="ms3d-button" type="button">Compris</button>
+      </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    function closeNotification() {
+      if (!document.body.contains(overlay)) return;
+      overlay.classList.remove("ms3d-show");
+      document.removeEventListener("keydown", escapeHandler);
+      setTimeout(() => {
+        overlay.remove();
+        if (typeof onClose === "function") onClose();
+      }, 320);
+    }
+
+    function escapeHandler(event) {
+      if (event.key === "Escape") closeNotification();
+    }
+
+    overlay.querySelector(".ms3d-button")
+      .addEventListener("click", closeNotification);
+
+    overlay.addEventListener("click", event => {
+      if (event.target === overlay) closeNotification();
+    });
+
+    document.addEventListener("keydown", escapeHandler);
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => overlay.classList.add("ms3d-show"));
+    });
+
+    overlay.querySelector(".ms3d-button").focus();
+  }
+  
   function money(value) {
     return Number(value).toLocaleString("fr-FR") + " FCFA";
   }

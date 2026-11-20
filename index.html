@@ -3452,6 +3452,7 @@ function money(value) {
   
   let msOrderLaunchLocked = false;
 
+  
   document.addEventListener("visibilitychange", () => {
     if (!document.hidden && msOrderLaunchLocked) {
       msOrderLaunchLocked = false;
@@ -3462,8 +3463,14 @@ function money(value) {
         orderButton.disabled = false;
         orderButton.textContent = "Préparer ma commande";
       }
+
+      if (sessionStorage.getItem("ms_order_pending_confirmation") === "1") {
+        sessionStorage.removeItem("ms_order_pending_confirmation");
+        showOrderSentQuestion();
+      }
     }
   });
+
       document.addEventListener("click", async function (event) {
     const clicked = event.target.closest("#msPrepareOrder");
     if (!clicked || msOrderLaunchLocked) return;

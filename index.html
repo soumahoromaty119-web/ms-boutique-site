@@ -3116,7 +3116,7 @@ document.addEventListener("DOMContentLoaded",function(){
         <div class="ms3d-glow"></div>
         <div class="ms3d-icon" aria-hidden="true">!</div>
         <h3 id="ms3DErrorTitle">Petite vérification</h3>
-        <p>Il manque certaines informations pour préparer ta commande. Complète les champs obligatoires et réessaie.</p>
+        <p>Vérifie les informations saisies. Certains champs sont manquants ou ton numéro de téléphone est incorrect.</p>
         <button class="ms3d-button" type="button">Compris</button>
       </div>
     `;
@@ -3172,6 +3172,7 @@ document.addEventListener("DOMContentLoaded",function(){
     const note = fieldValue("msCustomerNote");
 
     
+    
     if (!name || !phone || !city || !address) {
       const missing = [
         ["msCustomerName", name],
@@ -3188,6 +3189,19 @@ document.addEventListener("DOMContentLoaded",function(){
 
       return;
     }
+
+    const normalizedPhone = phone
+      .replace(/[^\d+]/g, "")
+      .replace(/^(?:\+225|00225|225)/, "");
+
+    if (!/^0\d{9}$/.test(normalizedPhone)) {
+      showDeliveryError(() => {
+        document.getElementById("msCustomerPhone").focus();
+      });
+
+      return;
+    }
+
 
     let cart = [];
 

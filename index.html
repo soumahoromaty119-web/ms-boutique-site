@@ -2607,5 +2607,66 @@ document.addEventListener("DOMContentLoaded",function(){
     requestAnimationFrame(function(){ canvas.style.opacity="1"; });
   }
 })();
+</script><script>
+/* M&S — ANIMATIONS ÉTAPE A : ARTICLES, COLLECTIONS ET FICHES */
+(function(){
+  "use strict";
+  if(window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  var ease="cubic-bezier(.16,1,.3,1)";
+  var css="";
+
+  /* Cartes articles : glissement en alternance gauche / droite */
+  css+="html body .product-card.reveal{opacity:0;filter:blur(6px);transform:translateX(-70px) rotate(-2deg) scale(.94);transition:opacity .9s ease,transform 1s "+ease+",filter .9s ease,box-shadow .55s;transition-delay:var(--delay,0ms)}";
+  css+="html body .product-card.reveal:nth-of-type(even){transform:translateX(70px) rotate(2deg) scale(.94)}";
+  css+="@media(max-width:700px){html body .product-card.reveal,html body .product-card.reveal:nth-of-type(even){transform:translateY(60px) scale(.95)}}";
+  css+="html body .product-card.reveal.show{opacity:1;filter:none;transform:none}";
+  css+="html body .product-card.reveal.show:hover{transform:translateY(-8px)}";
+
+  /* Collections : montée avec léger zoom */
+  css+="html body .category.reveal{opacity:0;filter:blur(5px);transform:translateY(60px) scale(.9) rotate(-1.5deg);transition:opacity .9s ease,transform 1s "+ease+",filter .9s ease,box-shadow .65s;transition-delay:var(--delay,0ms)}";
+  css+="html body .category.reveal.show{opacity:1;filter:none;transform:none}";
+  css+="html body .category.reveal.show:hover{transform:translateY(-10px) scale(1.015)}";
+
+  /* Fiche produit et panier : entrée ET sortie animées */
+  css+="html body .ms-layer{display:flex!important;visibility:hidden;opacity:0;pointer-events:none;transition:opacity .4s ease,visibility 0s linear .5s}";
+  css+="html body .ms-layer.ms-visible{visibility:visible;opacity:1;pointer-events:auto;transition:opacity .4s ease,visibility 0s}";
+  css+="html body .ms-layer.ms-visible,html body .ms-panel{animation:none!important}";
+  css+="html body .ms-panel{opacity:0;transform:translateY(70px) scale(.93);transition:transform .55s "+ease+",opacity .4s ease}";
+  css+="html body .ms-layer.ms-visible .ms-panel{opacity:1;transform:none}";
+  css+="@keyframes msKid{from{opacity:0;transform:translateY(16px)}}";
+  for(var i=1;i<=9;i++){
+    css+="html body .ms-layer.ms-visible .ms-panel>*:nth-child("+i+"){animation:msKid .55s "+ease+" backwards;animation-delay:"+(0.1+i*0.06).toFixed(2)+"s}";
+  }
+
+  var style=document.createElement("style");
+  style.id="msAnimStepA";
+  style.textContent=css;
+  document.body.appendChild(style);
+
+  /* Les articles rejouent leur entrée à chaque changement de filtre */
+  function replay(){
+    var cards=[].slice.call(document.querySelectorAll(".product-card")).filter(function(c){
+      return c.style.display!=="none";
+    });
+    cards.forEach(function(c,i){
+      c.style.transition="none";
+      c.classList.remove("show");
+      c.style.setProperty("--delay",(i*120)+"ms");
+    });
+    void document.body.offsetWidth;
+    requestAnimationFrame(function(){
+      cards.forEach(function(c){
+        c.style.transition="";
+        c.classList.add("show");
+      });
+    });
+  }
+  document.addEventListener("click",function(e){
+    if(e.target.closest&&e.target.closest(".filter-btn,[data-category-link]")){
+      setTimeout(replay,30);
+    }
+  });
+})();
 </script></body>
 </html>

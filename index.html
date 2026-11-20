@@ -3565,7 +3565,9 @@ function money(value) {
     clicked.disabled = true;
     clicked.textContent = "Ouverture de WhatsApp...";
 
-    const whatsappWindow = window.open(whatsappUrl, "_blank");
+        sessionStorage.setItem("ms_order_pending_confirmation", "1");
+        
+        const whatsappWindow = window.open(whatsappUrl, "_blank");
 
     if (whatsappWindow) {
       whatsappWindow.opener = null;

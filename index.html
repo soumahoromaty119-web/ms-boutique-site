@@ -1611,6 +1611,63 @@ BIENVENUE CHEZ M&S BOUTIQUE — LA MODE QUI RÉVÈLE TA PERSONNALITÉ
   </div>
 </section>
 
+
+<section class="ms-account-section" id="mon-compte">
+  <div class="ms-account-card">
+
+    <div class="ms-account-heading">
+      <small>TON ESPACE PERSONNEL</small>
+      <h2>Mon compte</h2>
+      <p>Retrouve ton univers M&S BOUTIQUE en toute simplicité.</p>
+    </div>
+
+    <form class="ms-account-form" id="msAccountForm">
+
+      <label id="msAccountNameField">
+        Nom complet
+        <input type="text" id="msAccountName"
+          placeholder="Ton nom et prénom" autocomplete="name" required>
+      </label>
+
+      <label>
+        Adresse e-mail
+        <input type="email" id="msAccountEmail"
+          placeholder="exemple@email.com" autocomplete="email" required>
+      </label>
+
+      <label>
+        Mot de passe
+        <input type="password" id="msAccountPassword"
+          placeholder="6 caractères minimum"
+          minlength="6" autocomplete="new-password" required>
+      </label>
+
+      <button class="ms-account-submit" id="msAccountSubmit" type="submit">
+        Créer mon compte
+      </button>
+
+      <p class="ms-account-message" id="msAccountMessage" aria-live="polite"></p>
+
+      <button class="ms-account-switch" id="msAccountModeSwitch" type="button">
+        J'ai déjà un compte : me connecter
+      </button>
+
+      <button class="ms-account-forgot" id="msForgotPassword" type="button" hidden>
+        Mot de passe oublié ?
+      </button>
+
+    </form>
+
+    <div class="ms-account-connected" id="msAccountConnected" hidden>
+      <h3>Bienvenue !</h3>
+      <p id="msAccountWelcome"></p>
+      <button class="ms-account-logout" id="msAccountLogout" type="button">
+        Me déconnecter
+      </button>
+    </div>
+
+  </div>
+</section>
 </main>
 
 <footer>

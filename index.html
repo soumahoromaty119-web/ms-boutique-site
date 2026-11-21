@@ -3964,6 +3964,142 @@ function money(value) {
   }
 </script>
 <!-- FIN CONNEXION FIREBASE -->
+
+<script>
+/* M&S BOUTIQUE — COMPTES CLIENTS FIREBASE */
+(function(){
+  "use strict";
+
+  const auth = window.msFirebaseAuth;
+  const form = document.getElementById("msAccountForm");
+  if(!auth || !form) return;
+
+  const nameField = document.getElementById("msAccountNameField");
+  const nameInput = document.getElementById("msAccountName");
+  const emailInput = document.getElementById("msAccountEmail");
+  const passwordInput = document.getElementById("msAccountPassword");
+  const submitButton = document.getElementById("msAccountSubmit");
+  const switchButton = document.getElementById("msAccountModeSwitch");
+  const forgotButton = document.getElementById("msForgotPassword");
+  const message = document.getElementById("msAccountMessage");
+  const connected = document.getElementById("msAccountConnected");
+  const welcome = document.getElementById("msAccountWelcome");
+  const logoutButton = document.getElementById("msAccountLogout");
+
+  let mode = "register";
+
+  function showMessage(text, success){
+    message.textContent = text;
+    message.style.color = success ? "#287747" : "#a13b3b";
+  }
+
+  function setMode(nextMode){
+    mode = nextMode;
+    const registering = mode === "register";
+
+    nameField.hidden = !registering;
+    nameInput.required = registering;
+    passwordInput.autocomplete = registering ? "new-password" : "current-password";
+
+    submitButton.textContent = registering ? "Créer mon compte" : "Me connecter";
+    switchButton.textContent = registering
+      ? "J'ai déjà un compte : me connecter"
+      : "Je n'ai pas encore de compte : m'inscrire";
+
+    forgotButton.hidden = registering;
+    showMessage("", false);
+  }
+
+  switchButton.addEventListener("click", function(){
+    setMode(mode === "register" ? "login" : "register");
+  });
+
+  form.addEventListener("submit", async function(event){
+    event.preventDefault();
+
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+    const name = nameInput.value.trim();
+
+    submitButton.disabled = true;
+    showMessage("Veuillez patienter...", true);
+
+    try{
+      if(mode === "register"){
+        const result = await auth.createUserWithEmailAndPassword(email, password);
+
+        try{
+          await result.user.updateProfile({displayName:name});
+        }catch(profileError){
+          console.warn("Le compte est créé, mais le nom n'a pas pu être enregistré.", profileError);
+        }
+
+        showMessage("Ton compte a été créé avec succès !", true);
+      }else{
+        await auth.signInWithEmailAndPassword(email, password);
+        showMessage("Connexion réussie !", true);
+      }
+    }catch(error){
+      const messages = {
+        "auth/email-already-in-use":"Cette adresse e-mail possède déjà un compte.",
+        "auth/invalid-email":"Cette adresse e-mail n'est pas valide.",
+        "auth/weak-password":"Choisis un mot de passe plus sécurisé (6 caractères minimum).",
+        "auth/user-not-found":"Aucun compte ne correspond à cette adresse.",
+        "auth/wrong-password":"Le mot de passe est incorrect.",
+        "auth/invalid-credential":"Adresse e-mail ou mot de passe incorrect.",
+        "auth/too-many-requests":"Trop de tentatives. Réessaie plus tard.",
+        "auth/operation-not-allowed":"L'inscription par e-mail n'est pas activée dans Firebase.",
+        "auth/network-request-failed":"Vérifie ta connexion Internet puis réessaie."
+      };
+
+      showMessage(messages[error.code] || "Une erreur est survenue. Réessaie.", false);
+    }finally{
+      submitButton.disabled = false;
+    }
+  });
+
+  forgotButton.addEventListener("click", async function(){
+    const email = emailInput.value.trim();
+
+    if(!email){
+      showMessage("Saisis d'abord ton adresse e-mail.", false);
+      emailInput.focus();
+      return;
+    }
+
+    try{
+      await auth.sendPasswordResetEmail(email);
+      showMessage("Un lien de réinitialisation a été envoyé si cette adresse est enregistrée.", true);
+    }catch(error){
+      showMessage("Impossible d'envoyer le lien. Vérifie ton adresse e-mail.", false);
+    }
+  });
+
+  logoutButton.addEventListener("click", async function(){
+    try{
+      await auth.signOut();
+      showMessage("Tu es déconnectée.", true);
+    }catch(error){
+      showMessage("La déconnexion a échoué. Réessaie.", false);
+    }
+  });
+
+  auth.onAuthStateChanged(function(user){
+    if(user){
+      form.hidden = true;
+      connected.hidden = false;
+      welcome.textContent = "Connectée en tant que " +
+        (user.displayName || user.email);
+    }else{
+      form.hidden = false;
+      connected.hidden = true;
+      passwordInput.value = "";
+    }
+  });
+
+  setMode("register");
+})();
+</script>
 <script>
 /* M&S — ÉTAPE E : ZONES DE LIVRAISON, FRAIS ET MOYENS DE PAIEMENT */
 (function(){

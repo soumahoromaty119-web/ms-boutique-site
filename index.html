@@ -2720,6 +2720,170 @@ document.addEventListener("DOMContentLoaded",function(){
 </style>
 
 <script>
+/* M&S — ÉTAPE D : PILE DE PHOTOS EN SECTION, GALERIE DES FICHES, AJOUT AU PANIER */
+(function(){
+  "use strict";
+  var reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ===== 1. PILE DE PHOTOS DANS UNE SECTION À PART ===== */
+  (function(){
+    if(reduce) return;
+    try{
+      var hero=document.querySelector(".hero");
+      var anchor=document.getElementById("collections");
+      if(!hero||!anchor) return;
+
+      /* 1. Le hero retrouve sa disposition d'origine */
+      var old=document.getElementById("msAnimStepB");
+      if(old){
+        old.textContent=old.textContent.replace("html body .hero{flex-direction:column;align-items:stretch;min-height:0}","");
+      }
+
+      /* 2. Style de la nouvelle section */
+      var css="";
+      css+="html body .ms-feature{background:radial-gradient(circle at 18% 30%,rgba(190,151,221,.2),transparent 55%),#fff;overflow:hidden}";
+      css+=".ms-feature-in{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;max-width:1000px;margin:0 auto}";
+      css+=".ms-feature-media{display:grid;place-items:center;padding:30px 50px 30px 20px;min-height:430px}";
+      css+=".ms-feature-text .section-heading{text-align:left;margin-bottom:28px}";
+      css+=".ms-feature .primary-btn{background:var(--purple);color:#fff}";
+      css+=".ms-feature .primary-btn:hover{background:var(--deep)}";
+      css+="html body .ms-stack.ms-in-section{position:relative;right:auto;top:auto;transform:none;order:0;margin:0;width:min(300px,64vw);z-index:1}";
+      css+="@media(max-width:800px){.ms-feature-in{grid-template-columns:1fr;gap:10px}.ms-feature-text{text-align:center}.ms-feature-text .section-heading{text-align:center;margin-bottom:22px}.ms-feature-media{min-height:380px;padding:24px 44px 24px 14px}}";
+      var st=document.createElement("style");
+      st.id="msAnimStepC";
+      st.textContent=css;
+      document.body.appendChild(st);
+
+      /* 3. La section (cachée tant que les photos ne sont pas chargées) */
+      var sec=document.createElement("section");
+      sec.className="section ms-feature reveal";
+      sec.id="vedettes";
+      sec.style.display="none";
+      sec.innerHTML=
+        '<div class="ms-feature-in">'+
+          '<div class="ms-feature-media"></div>'+
+          '<div class="ms-feature-text">'+
+            '<div class="section-heading"><small>NOUVEAUTÉS</small><h2>Nos pièces du moment</h2>'+
+            '<p>Touche les photos pour les faire défiler, puis choisis ta taille et ta couleur.</p></div>'+
+            '<a href="#produits" class="primary-btn">VOIR NOS ARTICLES</a>'+
+          '</div>'+
+        '</div>';
+      anchor.parentNode.insertBefore(sec,anchor);
+      var media=sec.querySelector(".ms-feature-media");
+
+      /* 4. On déplace la pile de photos dans la section dès qu'elle existe */
+      var stack=null,userUntil=0,auto=false,inView=false;
+      function adopt(){
+        var s=document.querySelector(".hero .ms-stack");
+        if(!s) return false;
+        stack=s;
+        s.classList.add("ms-in-section");
+        media.appendChild(s);
+        sec.style.display="";
+        var inner=s.querySelector(".ms-stack-in");
+        sec.addEventListener("pointermove",function(e){
+          var r=sec.getBoundingClientRect();
+          var x=(e.clientX-r.left)/r.width-.5, y=(e.clientY-r.top)/r.height-.5;
+          if(inner) inner.style.transform="rotateY("+(x*18)+"deg) rotateX("+(-y*18)+"deg)";
+        },{passive:true});
+        sec.addEventListener("pointerleave",function(){ if(inner) inner.style.transform=""; });
+        s.addEventListener("click",function(){ if(!auto) userUntil=Date.now()+6000; });
+        new IntersectionObserver(function(es){ inView=es[0].isIntersecting; }).observe(sec);
+        setInterval(function(){
+          if(!inView||document.hidden||Date.now()<userUntil) return;
+          auto=true; s.click(); auto=false;
+        },3800);
+        return true;
+      }
+      if(!adopt()){
+        var mo=new MutationObserver(function(){ if(adopt()) mo.disconnect(); });
+        mo.observe(hero,{childList:true});
+        setTimeout(function(){ mo.disconnect(); },15000);
+      }
+    }catch(err){ if(window.console) console.warn("MS pile :",err); }
+  })();
+
+  /* ===== 2. GALERIE DE PHOTOS DANS LA FICHE PRODUIT ===== */
+  var GALLERY={
+    "ensemble épaule dénudée smocké":["ensemble-smocke-fuchsia.jpg","ensemble-smocke-orange.jpg","ensemble-smocke-rouge.jpg"],
+    "robe longue rose à volants":["robe-rose.jpg"],
+    "ensemble rouge uni":["ensemble-rouge.jpg"],
+    "ensemble blanc et rouge à carreaux":["ensemble-carreaux.jpg"]
+  };
+  var gcss=".ms-gallery{margin:6px 0 18px}"+
+    ".ms-g-main{width:100%;height:min(46vh,340px);object-fit:cover;object-position:top;border-radius:12px;display:block;background:#f3edf8;transition:opacity .18s ease}"+
+    ".ms-g-thumbs{display:flex;gap:8px;margin-top:8px}"+
+    ".ms-g-th{width:58px;height:72px;padding:0;border:2px solid transparent;border-radius:8px;overflow:hidden;opacity:.6;background:none;transition:opacity .3s,border-color .3s,transform .3s}"+
+    ".ms-g-th.on{border-color:#633b91;opacity:1;transform:translateY(-2px)}"+
+    ".ms-g-th img{width:100%;height:100%;object-fit:cover;display:block}"+
+    ".ms-fly{position:fixed;width:28px;height:28px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#e1b8ff,#633b91);box-shadow:0 0 18px rgba(160,100,220,.8);z-index:2147483000;pointer-events:none}"+
+    "@keyframes msBump{40%{transform:scale(1.22)}}"+
+    ".ms-bump{animation:msBump .5s ease}";
+  var gs=document.createElement("style");
+  gs.id="msAnimStepD";
+  gs.textContent=gcss;
+  document.body.appendChild(gs);
+
+  function setGallery(){
+    var t=document.getElementById("msProductTitle");
+    var panel=t&&t.closest(".ms-panel");
+    if(!panel) return;
+    var key=t.textContent.trim().toLowerCase();
+    var list=GALLERY[key];
+    var g=document.getElementById("msGallery");
+    if(!list){ if(g) g.remove(); return; }
+    if(g&&g.getAttribute("data-k")===key) return;
+    if(g) g.remove();
+    g=document.createElement("div");
+    g.id="msGallery"; g.className="ms-gallery"; g.setAttribute("data-k",key);
+    var main=document.createElement("img");
+    main.className="ms-g-main"; main.alt=t.textContent; main.src=list[0];
+    g.appendChild(main);
+    if(list.length>1){
+      var th=document.createElement("div"); th.className="ms-g-thumbs";
+      list.forEach(function(src,i){
+        var b=document.createElement("button"); b.type="button"; b.className="ms-g-th"+(i?"":" on");
+        b.setAttribute("aria-label","Photo "+(i+1));
+        var im=document.createElement("img"); im.src=src; im.alt=""; b.appendChild(im);
+        b.addEventListener("click",function(){
+          main.style.opacity="0";
+          setTimeout(function(){ main.src=src; main.style.opacity="1"; },180);
+          th.querySelectorAll(".ms-g-th").forEach(function(x){ x.classList.toggle("on",x===b); });
+        });
+        th.appendChild(b);
+      });
+      g.appendChild(th);
+    }
+    panel.insertBefore(g,t);
+  }
+  new MutationObserver(setGallery).observe(document.body,{childList:true,subtree:true,characterData:true});
+
+  /* ===== 3. AJOUT AU PANIER : une bille lumineuse vole vers le panier ===== */
+  if(!reduce){
+    document.addEventListener("click",function(e){
+      var btn=e.target.closest&&e.target.closest("#msAddToCart");
+      var cart=document.getElementById("msCartOpen");
+      if(!btn||!cart||!document.body.animate) return;
+      var a=btn.getBoundingClientRect(), c=cart.getBoundingClientRect();
+      var sx=a.left+a.width/2, sy=a.top+a.height/2;
+      var dx=c.left+c.width/2-sx, dy=c.top+c.height/2-sy;
+      var dot=document.createElement("div"); dot.className="ms-fly";
+      dot.style.left=(sx-14)+"px"; dot.style.top=(sy-14)+"px";
+      document.body.appendChild(dot);
+      var anim=dot.animate([
+        {transform:"translate(0,0) scale(1)",opacity:1},
+        {transform:"translate("+(dx*.5)+"px,"+(dy*.5-90)+"px) scale(.9)",opacity:1,offset:.5},
+        {transform:"translate("+dx+"px,"+dy+"px) scale(.25)",opacity:.25}
+      ],{duration:850,easing:"cubic-bezier(.5,0,.3,1)"});
+      anim.onfinish=function(){
+        dot.remove();
+        var n=document.getElementById("msCartCount");
+        [cart,n].forEach(function(el){ if(!el) return; el.classList.remove("ms-bump"); void el.offsetWidth; el.classList.add("ms-bump"); });
+      };
+    });
+  }
+})();
+</script><script>
 /* M&S — HERO 3D : SOIE VIOLETTE */
 (function(){
   "use strict";

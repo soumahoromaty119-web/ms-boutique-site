@@ -1,0 +1,547 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#30243b">
+<title>Mon compte | M&S BOUTIQUE</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --purple:#633b91;
+  --purple-light:#9568c2;
+  --deep:#30243b;
+  --muted:#817889;
+  --border:#eee8f3;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  font-family:'DM Sans',sans-serif;
+  color:var(--deep);
+  background:#faf8fc;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+a{text-decoration:none;color:inherit}
+button,input{font:inherit}
+button{cursor:pointer}
+
+/* EN-TÊTE */
+
+.account-header{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  padding:24px 6%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  z-index:10;
+  color:white;
+}
+
+.account-logo{
+  font-size:22px;
+  font-weight:800;
+  letter-spacing:2px;
+}
+
+.account-logo span{color:#d9b8f7}
+
+.account-back{
+  border:1px solid rgba(255,255,255,.45);
+  padding:10px 18px;
+  border-radius:30px;
+  font-size:12px;
+  font-weight:700;
+  backdrop-filter:blur(10px);
+}
+
+/* HERO ANIMÉ */
+
+.account-hero{
+  min-height:390px;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:110px 22px 95px;
+  color:white;
+  overflow:hidden;
+  background:var(--deep);
+}
+
+.account-hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(110deg,rgba(34,23,46,.88),rgba(48,36,59,.35)),
+    url('couv-hero.jpg') center 35%/cover no-repeat;
+  animation:accountZoom 18s ease-in-out infinite alternate;
+}
+
+.account-hero::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(0deg,#faf8fc,transparent 42%);
+}
+
+.account-hero-content{
+  position:relative;
+  z-index:2;
+  max-width:650px;
+  animation:accountEntrance 1.2s ease both;
+}
+
+.account-hero-content small{
+  font-size:10px;
+  letter-spacing:4px;
+  color:#e1c8f7;
+  font-weight:800;
+}
+
+.account-hero-content h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(38px,7vw,65px);
+  line-height:1.1;
+  margin:18px 0;
+}
+
+.account-hero-content p{
+  font-size:14px;
+  line-height:1.8;
+  color:#eee4f5;
+}
+
+.account-orbit{
+  position:absolute;
+  width:250px;
+  height:250px;
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:50%;
+  top:30%;
+  right:-100px;
+  animation:accountRotate 25s linear infinite;
+}
+
+.account-orbit::before{
+  content:"";
+  position:absolute;
+  width:13px;
+  height:13px;
+  background:#d9b8f7;
+  border-radius:50%;
+  top:25px;
+  left:35px;
+  box-shadow:0 0 25px #d9b8f7;
+}
+
+@keyframes accountZoom{
+  from{transform:scale(1)}
+  to{transform:scale(1.12)}
+}
+
+@keyframes accountEntrance{
+  from{opacity:0;transform:translateY(30px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+@keyframes accountRotate{
+  to{transform:rotate(360deg)}
+}
+
+/* CARTE CLIENT */
+
+.account-area{
+  position:relative;
+  z-index:3;
+  padding:0 20px 85px;
+  margin-top:-55px;
+}
+
+.account-card{
+  max-width:490px;
+  margin:auto;
+  padding:38px;
+  border:1px solid var(--border);
+  border-radius:25px;
+  background:white;
+  box-shadow:0 25px 70px rgba(48,36,59,.13);
+}
+
+.account-heading{text-align:center;margin-bottom:27px}
+
+.account-heading small{
+  color:var(--purple);
+  font-weight:800;
+  letter-spacing:2px;
+  font-size:10px;
+}
+
+.account-heading h2{
+  font-family:'Playfair Display',serif;
+  font-size:30px;
+  margin:10px 0;
+}
+
+.account-heading p{
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.7;
+}
+
+.account-form{display:grid;gap:16px}
+
+.account-form label{
+  font-size:12px;
+  font-weight:700;
+}
+
+.account-form input{
+  display:block;
+  width:100%;
+  margin-top:8px;
+  padding:15px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:#fcfaff;
+  outline:none;
+  color:var(--deep);
+}
+
+.account-form input:focus{
+  border-color:var(--purple);
+  box-shadow:0 0 0 3px rgba(99,59,145,.10);
+}
+
+.account-submit{
+  border:0;
+  border-radius:12px;
+  padding:16px;
+  background:linear-gradient(135deg,#8053b5,#503078);
+  color:white;
+  font-weight:800;
+  box-shadow:0 8px 20px rgba(80,48,120,.20);
+  transition:transform .3s,box-shadow .3s;
+}
+
+.account-submit:active{transform:scale(.98)}
+.account-submit:disabled{opacity:.6;cursor:wait}
+
+.account-switch,.account-forgot{
+  border:0;
+  background:none;
+  color:var(--purple);
+  font-size:12px;
+  font-weight:700;
+  padding:7px;
+}
+
+.account-message{
+  min-height:20px;
+  text-align:center;
+  font-size:12px;
+  line-height:1.6;
+}
+
+.account-connected{
+  text-align:center;
+  padding:15px 0;
+}
+
+.account-connected h3{
+  font-family:'Playfair Display',serif;
+  color:var(--purple);
+  font-size:25px;
+  margin-bottom:12px;
+}
+
+.account-connected p{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.7;
+  margin-bottom:22px;
+}
+
+.account-continue{
+  display:block;
+  padding:15px;
+  border-radius:12px;
+  color:white;
+  background:var(--deep);
+  font-weight:800;
+  font-size:13px;
+}
+
+.account-footer{
+  text-align:center;
+  padding:25px;
+  color:var(--muted);
+  font-size:11px;
+}
+
+[hidden]{display:none!important}
+
+@media(max-width:600px){
+  .account-header{padding:20px 5%}
+  .account-logo{font-size:18px}
+  .account-hero{min-height:350px}
+  .account-card{padding:29px 21px}
+  .account-heading h2{font-size:26px}
+}
+</style>
+</head>
+
+<body>
+
+<header class="account-header">
+  <a href="index.html" class="account-logo">M&S <span>BOUTIQUE</span></a>
+  <a href="index.html" class="account-back">← Retour à l'accueil</a>
+</header>
+
+<section class="account-hero">
+  <div class="account-orbit"></div>
+  <div class="account-hero-content">
+    <small>BIENVENUE DANS TON UNIVERS</small>
+    <h1>Ton style.<br>Ton espace.</h1>
+    <p>Crée ton compte M&S BOUTIQUE et profite pleinement de ton expérience shopping.</p>
+  </div>
+</section>
+
+<main class="account-area">
+  <div class="account-card">
+
+    <div class="account-heading">
+      <small>ESPACE PERSONNEL</small>
+      <h2 id="accountTitle">Créer mon compte</h2>
+      <p id="accountDescription">Rejoins M&S BOUTIQUE pour préparer tes achats en toute simplicité.</p>
+    </div>
+
+    <form class="account-form" id="accountForm">
+
+      <label id="accountNameField">
+        Nom complet
+        <input type="text" id="accountName"
+          placeholder="Ton nom et prénom"
+          autocomplete="name" required>
+      </label>
+
+      <label>
+        Adresse e-mail
+        <input type="email" id="accountEmail"
+          placeholder="exemple@email.com"
+          autocomplete="email" required>
+      </label>
+
+      <label>
+        Mot de passe
+        <input type="password" id="accountPassword"
+          placeholder="6 caractères minimum"
+          minlength="6" autocomplete="new-password" required>
+      </label>
+
+      <button class="account-submit" id="accountSubmit" type="submit">
+        Créer mon compte
+      </button>
+
+      <p class="account-message" id="accountMessage" aria-live="polite"></p>
+
+      <button class="account-switch" id="accountModeSwitch" type="button">
+        J'ai déjà un compte : me connecter
+      </button>
+
+      <button class="account-forgot" id="accountForgot" type="button" hidden>
+        Mot de passe oublié ?
+      </button>
+
+    </form>
+
+    <div class="account-connected" id="accountConnected" hidden>
+      <h3>Bienvenue chez M&S BOUTIQUE !</h3>
+      <p id="accountWelcome"></p>
+      <a href="index.html#produits" class="account-continue">
+        Découvrir la boutique →
+      </a>
+    </div>
+
+  </div>
+</main>
+
+<footer class="account-footer">
+  © M&S BOUTIQUE — La mode qui révèle ta personnalité.
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/13.4.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/13.4.0/firebase-auth-compat.js"></script>
+
+<script>
+(function(){
+  "use strict";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAzFNPGm2KIdP2FuOAF9xdVvQgS190seZ0",
+    authDomain: "ms-boutique-1ab84.firebaseapp.com",
+    projectId: "ms-boutique-1ab84",
+    storageBucket: "ms-boutique-1ab84.firebasestorage.app",
+    messagingSenderId: "581136495367",
+    appId: "1:581136495367:web:8eab80bbbebb79b52b4ba2"
+  };
+
+  try{
+    const app = firebase.apps.length
+      ? firebase.app()
+      : firebase.initializeApp(firebaseConfig);
+
+    const auth = app.auth();
+
+    const form = document.getElementById("accountForm");
+    const nameField = document.getElementById("accountNameField");
+    const nameInput = document.getElementById("accountName");
+    const emailInput = document.getElementById("accountEmail");
+    const passwordInput = document.getElementById("accountPassword");
+    const submit = document.getElementById("accountSubmit");
+    const switchButton = document.getElementById("accountModeSwitch");
+    const forgotButton = document.getElementById("accountForgot");
+    const message = document.getElementById("accountMessage");
+    const connected = document.getElementById("accountConnected");
+    const welcome = document.getElementById("accountWelcome");
+    const title = document.getElementById("accountTitle");
+    const description = document.getElementById("accountDescription");
+
+    let mode = "register";
+
+    function showMessage(text,success){
+      message.textContent = text;
+      message.style.color = success ? "#287747" : "#a13b3b";
+    }
+
+    function setMode(next){
+      mode = next;
+      const registering = mode === "register";
+
+      nameField.hidden = !registering;
+      nameInput.required = registering;
+      passwordInput.autocomplete = registering
+        ? "new-password" : "current-password";
+
+      title.textContent = registering
+        ? "Créer mon compte" : "Ravie de te retrouver";
+
+      description.textContent = registering
+        ? "Rejoins M&S BOUTIQUE pour préparer tes achats en toute simplicité."
+        : "Connecte-toi pour retrouver ton expérience shopping.";
+
+      submit.textContent = registering
+        ? "Créer mon compte" : "Me connecter";
+
+      switchButton.textContent = registering
+        ? "J'ai déjà un compte : me connecter"
+        : "Je souhaite créer un compte";
+
+      forgotButton.hidden = registering;
+      showMessage("",false);
+    }
+
+    switchButton.addEventListener("click",function(){
+      setMode(mode === "register" ? "login" : "register");
+    });
+
+    form.addEventListener("submit",async function(event){
+      event.preventDefault();
+
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+      const name = nameInput.value.trim();
+
+      submit.disabled = true;
+      showMessage("Connexion en cours...",true);
+
+      try{
+        if(mode === "register"){
+          const result = await auth.createUserWithEmailAndPassword(email,password);
+
+          try{
+            await result.user.updateProfile({displayName:name});
+          }catch(profileError){
+            console.warn("Profil créé sans nom affiché.",profileError);
+          }
+        }else{
+          await auth.signInWithEmailAndPassword(email,password);
+        }
+
+        showMessage("C'est réussi ! Tu vas rejoindre la boutique...",true);
+        setTimeout(function(){
+          window.location.href = "index.html#produits";
+        },1200);
+
+      }catch(error){
+        const messages = {
+          "auth/email-already-in-use":"Cette adresse e-mail possède déjà un compte.",
+          "auth/invalid-email":"Cette adresse e-mail n'est pas valide.",
+          "auth/weak-password":"Choisis un mot de passe d'au moins 6 caractères.",
+          "auth/user-not-found":"Aucun compte ne correspond à cette adresse.",
+          "auth/wrong-password":"Le mot de passe est incorrect.",
+          "auth/invalid-credential":"Adresse e-mail ou mot de passe incorrect.",
+          "auth/too-many-requests":"Trop de tentatives. Réessaie plus tard.",
+          "auth/operation-not-allowed":"L'inscription par e-mail n'est pas activée.",
+          "auth/network-request-failed":"Vérifie ta connexion Internet."
+        };
+
+        showMessage(messages[error.code] || "Une erreur est survenue. Réessaie.",false);
+      }finally{
+        submit.disabled = false;
+      }
+    });
+
+    forgotButton.addEventListener("click",async function(){
+      const email = emailInput.value.trim();
+
+      if(!email){
+        showMessage("Saisis d'abord ton adresse e-mail.",false);
+        emailInput.focus();
+        return;
+      }
+
+      try{
+        await auth.sendPasswordResetEmail(email);
+        showMessage("Si cette adresse est enregistrée, un lien de réinitialisation lui a été envoyé.",true);
+      }catch(error){
+        showMessage("Impossible d'envoyer le lien. Vérifie ton adresse e-mail.",false);
+      }
+    });
+
+    auth.onAuthStateChanged(function(user){
+      if(user){
+        form.hidden = true;
+        connected.hidden = false;
+        title.textContent = "Ton espace est prêt";
+        description.textContent = "Tu es déjà connectée.";
+        welcome.textContent = "Connectée en tant que " +
+          (user.displayName || user.email);
+      }
+    });
+
+    setMode("register");
+
+  }catch(error){
+    console.error("Erreur Firebase :",error);
+    document.getElementById("accountMessage").textContent =
+      "Impossible de charger le service de compte. Réessaie plus tard.";
+  }
+})();
+</script>
+
+</body>
+</html>
